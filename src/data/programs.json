@@ -1,0 +1,54 @@
+{
+  "maestrias": [
+    {
+      "id": 1,
+      "title": "Maestría en Ciencias Computacionales",
+      "faculty": "Facultad Telemática",
+      "model": "Cuatrimestral"
+    },
+    {
+      "id": 2,
+      "title": "Maestría en Redes de Internet",
+      "faculty": "Facultad Telemática",
+      "model": "Cuatrimestral"
+    },
+    {
+      "id": 3,
+      "title": "Maestría en IoT",
+      "faculty": "Facultad Telemática",
+      "model": "Semestral"
+    },
+    {
+      "id": 4,
+      "title": "Maestría en Ciencia de Datos",
+      "faculty": "Facultad Telemática",
+      "model": "Semestral"
+    }
+  ],
+  "diplomados": [
+    {
+      "id": 5,
+      "title": "Diplomado en Ciencias Computacionales",
+      "faculty": "Facultad Telemática",
+      "model": "Semestral"
+    },
+    {
+      "id": 6,
+      "title": "Diplomado en Redes de Internet",
+      "faculty": "Facultad Telemática",
+      "model": "Semestral"
+    },
+    {
+      "id": 7,
+      "title": "Diplomado en IoT",
+      "faculty": "Facultad Telemática",
+      "model": "Semestral"
+    },
+    {
+      "id": 8,
+      "title": "Diplomado en Ciencia de Datos",
+      "faculty": "Facultad Telemática",
+      "model": "Semestral"
+    }
+  ]
+}
