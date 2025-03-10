@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+:root {
+  --nav-color: #6d7488;
+}
