@@ -50,5 +50,16 @@
       "faculty": "Facultad Telemática",
       "model": "Semestral"
     }
-  ]
+  ],
+  "opciones": {
+    "tipoPrograma": ["Maestría", "Diplomado"],
+    "numeroPeriodos": [1, 2, 3, 4, 5],
+    "nivel": ["Licenciatura", "Maestría", "Doctorado"],
+    "modelo": ["Semestral", "Cuatrimestral"],
+    "facultades": [
+      "Facultad Telemática",
+      "Facultad de Medicina",
+      "Facultad de Ciencias"
+    ]
+  }
 }
