@@ -5,7 +5,7 @@ import Button from "../Atoms/Button";
 import Input from "../Molecules/Input";
 import Ejemplo from "../../assets/ejemplo.jpg";
 import data from "../../data/programs.json";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const ProgramCreation = () => {
   return (

@@ -4,7 +4,7 @@ import SearchInput from "../Atoms/SearchInput.jsx";
 import { fetchPrograms } from "../../../public/api/fakeAPI.js";
 import Button from "../Atoms/Button.jsx";
 import Title from "../Atoms/Title.jsx";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const Programs = () => {
   const [maestrias, setMaestrias] = useState([]);
@@ -28,7 +28,7 @@ const Programs = () => {
     );
 
   return (
-    <div className="px-8 mx-10">
+    <div className="px-8 mx-10 mb-5">
       {/* Barra de búsqueda en la parte superior */}
       <div className="flex md:justify-between flex-col lg:flex-row items-start lg:items-center mb-6">
         <Title level="h1" className="mt-5">
