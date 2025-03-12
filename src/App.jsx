@@ -1,15 +1,20 @@
 import React from "react";
-import "./index.css";
-import NavBar from "./Components/Organisms/NavBar";
-// import ProgramCreation from "./Pages/ProgramCreation";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Programs from "./Components/Pages/Programs";
+import ProgramCreation from "./Components/Pages/ProgramCreation";
+import Layout from "./Components/Pages/Layout";
+import AsignaturesCreation from "./Components/Pages/AsignaturesCreation";
 
 export default function App() {
   return (
-    <div>
-      <NavBar />
-      <Programs />
-      {/* <ProgramCreation /> */}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Programs />} />
+          <Route path="/crear-programa" element={<ProgramCreation />} />
+          <Route path="/crear-asignatura" element={<AsignaturesCreation />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -4,6 +4,7 @@ import SearchInput from "../Atoms/SearchInput.jsx";
 import { fetchPrograms } from "../../../public/api/fakeAPI.js";
 import Button from "../Atoms/Button.jsx";
 import Title from "../Atoms/Title.jsx";
+import { Link } from "react-router-dom";
 
 const Programs = () => {
   const [maestrias, setMaestrias] = useState([]);
@@ -34,7 +35,10 @@ const Programs = () => {
           Programas Académicos
         </Title>
         <div className="flex flex-col items-start lg:flex-row   gap-4 mt-6 ">
-          <Button text="+ Crear Programa" className="text-sm font-thin" />
+          <Link to="/crear-programa">
+            <Button text="+ Crear Programa" className="text-sm font-thin" />
+          </Link>
+
           <SearchInput
             value={searchTerm}
             placeholder="Buscar..."
