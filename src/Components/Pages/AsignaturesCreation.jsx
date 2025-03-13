@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Title from "../Atoms/Title";
 import SemesterBox from "../Organisms/SemesterBox";
+import Button from "../Atoms/Button";
 
 const AsignaturesCreation = () => {
   const [programData, setProgramData] = useState(null);
@@ -34,8 +35,15 @@ const AsignaturesCreation = () => {
   return (
     <div className=" flex flex-col items-center  max-w-full px-6  mt-10 md:mt-10 lg:px-8 md:mx-10 lg:mt-10">
       {/* Título del programa */}
-      <Title level="h1" className="mb-5 self-start md:text-start  md:mx-3 ">
+      <Title
+        level="h1"
+        className="flex flex-col md:flex-row w-full justify-between  mb-5 self-start md:text-start  md:mx-3 "
+      >
         {programData ? programData.nombrePrograma : "Cargando..."}
+        <Button
+          text="Continuar"
+          className="font-normal w-[12rem] text-sm mt-3"
+        />
       </Title>
 
       {/* Renderiza SemesterBox según el número de periodos */}
