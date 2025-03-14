@@ -13,11 +13,13 @@ const SemesterBox = ({ title, isEditing }) => {
     localStorage.setItem("asignatures", JSON.stringify(asignatures));
   }, [asignatures]);
 
+  // Handle para agregar una nueva asignatura
   const handleAddAsignature = () => {
     if (!isEditing) return;
     setAsignatures((prev) => [...prev, { id: Date.now() }]);
   };
 
+  // Handle para eliminar asignatura
   const handleRemoveAsignature = (id) => {
     if (!isEditing) return;
     setAsignatures((prev) => prev.filter((asignature) => asignature.id !== id));

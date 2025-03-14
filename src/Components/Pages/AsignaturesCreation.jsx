@@ -5,10 +5,11 @@ import Button from "../Atoms/Button";
 import { Link } from "react-router";
 
 const AsignaturesCreation = () => {
-  const [programData, setProgramData] = useState(null);
+  const [programData, setProgramData] = useState(null); // Estado con datos del programCreation
   const [semesters, setSemesters] = useState([]);
   const [isEditing, setIsEditing] = useState(true); // Estado de edición
 
+  // Handle para pasar de creacion de asignaturas a la vista final
   const handleContinue = () => {
     const storedAsignatures =
       JSON.parse(localStorage.getItem("asignatures")) || [];

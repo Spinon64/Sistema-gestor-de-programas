@@ -4,8 +4,8 @@ import FinishedSemBox from "../Organisms/FinishedSemBox";
 import Button from "../Atoms/Button";
 
 const Assignatures = () => {
-  const [semesters, setSemesters] = useState([]);
-  const [programData, setProgramData] = useState(null);
+  const [semesters, setSemesters] = useState([]); // Estado con el numero de semestres
+  const [programData, setProgramData] = useState(null); // Estado con los datos recuperados del programa
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("programData"));

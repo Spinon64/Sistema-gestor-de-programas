@@ -27,11 +27,13 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
     localStorage.setItem(`mails_${asignatureId}`, JSON.stringify(mails));
   }, [mails, asignatureId]);
 
+  // Handle guarda los correos
   const handleAddMail = () => {
     if (!isEditing) return;
     setMails((prev) => [...prev, { id: Date.now(), value: "" }]);
   };
 
+  // Handle para cambiar y editar correos sin modificar otros
   const handleMailChange = (id, newValue) => {
     if (!isEditing) return;
     setMails((prev) =>
@@ -39,6 +41,7 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
     );
   };
 
+  // Handle para eliminar un correo de una asignatura
   const handleRemoveMail = (id) => {
     if (!isEditing) return;
     setMails((prev) => prev.filter((mail) => mail.id !== id));
