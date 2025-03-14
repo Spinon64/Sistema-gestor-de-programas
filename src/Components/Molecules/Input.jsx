@@ -1,7 +1,15 @@
 import React from "react";
 import Title from "../Atoms/Title";
 
-const Input = ({ label, placeHolder, className, value, onChange, name }) => {
+const Input = ({
+  label,
+  placeHolder,
+  className,
+  value,
+  onChange,
+  name,
+  disabled,
+}) => {
   return (
     <div>
       <Title level="h4" className="mb-2 ">
@@ -14,6 +22,7 @@ const Input = ({ label, placeHolder, className, value, onChange, name }) => {
         value={value}
         onChange={onChange}
         name={name}
+        disabled={disabled}
       />
     </div>
   );

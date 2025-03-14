@@ -4,6 +4,7 @@ import ProgramCreation from "./Components/Pages/ProgramCreation";
 import Layout from "./Components/Pages/Layout";
 import AsignaturesCreation from "./Components/Pages/AsignaturesCreation";
 import Process from "./Components/Pages/Process";
+import Assignatures from "./Components/Pages/Assignatures";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/crear-programa" element={<ProgramCreation />} />
         <Route path="/crear-asignatura" element={<AsignaturesCreation />} />
         <Route path="/calendario-procesos" element={<Process />} />
+        <Route path="/asignaturas" element={<Assignatures />} />
       </Route>
     </Routes>
   );

@@ -21,7 +21,6 @@ const ProgramCreation = () => {
 
   // Manejar cambios en los inputs y selects
   const handleChange = (e) => {
-    console.log("lo que sea");
     const { name, value } = e.target;
     console.log(e.target);
     setFormData((prevData) => ({
