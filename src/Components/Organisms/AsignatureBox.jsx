@@ -23,7 +23,8 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
     localStorage.setItem(`mails_${asignatureId}`, JSON.stringify(mails));
   }, [mails, asignatureId]);
 
-  const handleAddMail = () => {
+  const handleAddMail = (event) => {
+    event.preventDefault();
     if (!isEditing) return;
     setMails((prev) => [...prev, { id: Date.now(), value: "" }]);
   };
@@ -94,7 +95,7 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
         <div className="flex flex-col gap-3 sm:gap-5">
           <Button
             text="Agregar correo"
-            onClick={handleAddMail}
+            onClick={(e) => handleAddMail(e)}
             className="h-[2.5rem] w-full sm:w-auto"
           />
         </div>
