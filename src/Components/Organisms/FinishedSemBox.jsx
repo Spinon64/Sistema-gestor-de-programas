@@ -17,7 +17,7 @@ const FinishedSemBox = () => {
       <Box className="flex flex-col h-auto gap-2 p-4 w-full shadow-lg rounded-lg">
         <div className="flex flex-row justify-around border-b-2 pb-2">
           <Title level="h3">Asignaturas</Title>
-          <Title level="h3">Profesores</Title>
+          <Title level="h3">Facilitadores</Title>
         </div>
         {semesterData.length > 0 ? (
           semesterData.map((asignatura) => (

@@ -5,35 +5,29 @@ import Button from "../Atoms/Button";
 import DeleteIcon from "../Atoms/DeleteIcon";
 
 const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
-  // Estado del nombre de la asignatura (persistente)
   const [asignatureName, setAsignatureName] = useState(() => {
     const savedName = localStorage.getItem(`asignature_${asignatureId}`);
     return savedName || "";
   });
 
-  // Estado de los correos (persistente)
   const [mails, setMails] = useState(() => {
     const savedMails = localStorage.getItem(`mails_${asignatureId}`);
-    return savedMails ? JSON.parse(savedMails) : [{ id: 0, value: "" }];
+    return savedMails ? JSON.parse(savedMails) : [];
   });
 
-  // Guardar asignatura en localStorage cuando cambia
   useEffect(() => {
     localStorage.setItem(`asignature_${asignatureId}`, asignatureName);
   }, [asignatureName, asignatureId]);
 
-  // Guardar correos en localStorage cuando cambian
   useEffect(() => {
     localStorage.setItem(`mails_${asignatureId}`, JSON.stringify(mails));
   }, [mails, asignatureId]);
 
-  // Handle guarda los correos
   const handleAddMail = () => {
     if (!isEditing) return;
     setMails((prev) => [...prev, { id: Date.now(), value: "" }]);
   };
 
-  // Handle para cambiar y editar correos sin modificar otros
   const handleMailChange = (id, newValue) => {
     if (!isEditing) return;
     setMails((prev) =>
@@ -41,7 +35,6 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
     );
   };
 
-  // Handle para eliminar un correo de una asignatura
   const handleRemoveMail = (id) => {
     if (!isEditing) return;
     setMails((prev) => prev.filter((mail) => mail.id !== id));
@@ -73,7 +66,7 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
         <p className="text-sm font-medium text-gray-700">Correos:</p>
         {mails.map((mail) => (
           <div key={mail.id} className="flex items-center gap-2">
-            <div className="flex-grow">
+            <div className="flex-grow ">
               <Input
                 placeHolder="ejemplo@ucol.mx"
                 value={mail.value}
@@ -83,6 +76,7 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
                   !isEditing ? "bg-gray-200 cursor-not-allowed" : ""
                 }`}
               />
+              {/* onChange={(e) => handleMailChange(mail.id, e.target.value)} */}
             </div>
             {isEditing && (
               <button

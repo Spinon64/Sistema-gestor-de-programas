@@ -53,9 +53,15 @@
   ],
   "opciones": {
     "tipoPrograma": ["Maestría", "Diplomado"],
-    "numeroPeriodos": [1, 2, 3, 4, 5],
-    "nivel": ["Licenciatura", "Maestría", "Doctorado"],
-    "modelo": ["Semestral", "Cuatrimestral"],
+    "numeroPeriodos": ["Unico (Diplomado)", 1, 2, 3, 4, 5],
+    "nivel": [
+      "Media superior",
+      "Superior",
+      "Posgrado",
+      "Educación continua",
+      "Extensión universitaria previsión asistencial"
+    ],
+    "modelo": ["Semestral", "Cuatrimestral", "Periodo Unico (Diplomado)"],
     "facultades": [
       "Facultad Telemática",
       "Facultad de Medicina",

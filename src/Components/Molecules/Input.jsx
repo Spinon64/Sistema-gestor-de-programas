@@ -18,7 +18,7 @@ const Input = ({
       <input
         type="text"
         placeholder={placeHolder}
-        className={`${className} border-1 border-gray-400  rounded-md h-12`}
+        className={` border-1 border-gray-400  rounded-md h-12 ${className}`}
         value={value}
         onChange={onChange}
         name={name}

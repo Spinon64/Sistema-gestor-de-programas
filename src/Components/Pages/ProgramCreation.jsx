@@ -22,21 +22,24 @@ const ProgramCreation = () => {
   // Manejar cambios en los inputs y selects
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(e.target);
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+
+    setFormData((prevData) => {
+      let newFormData = { ...prevData, [name]: value };
+
+      // Si el usuario selecciona "Diplomado", asignar automáticamente "Unico (Diplomado)"
+      if (name === "tipoPrograma" && value === "Diplomado") {
+        newFormData.numeroPeriodos = "Unico (Diplomado)";
+      }
+
+      return newFormData;
+    });
   };
 
-  // Redirigir sin volver a guardar datos vacíos
+  // Guardar en localStorage y redirigir
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Datos guardados:", formData); // Verificar en consola
-
-    // Guardar en localStorage cada vez que se le de click al boton de guardar
+    console.log("Datos guardados:", formData);
     localStorage.setItem("programData", JSON.stringify(formData));
-
     navigate("/crear-asignatura");
   };
 
@@ -44,7 +47,7 @@ const ProgramCreation = () => {
     <div className="mx-auto mt-5 flex w-full max-w-[110rem] flex-1 flex-col px-4 sm:px-6 lg:px-8 lg:mt-20 lg:items-center">
       <div className="mx-10 flex flex-col justify-center">
         <Title level="h1" className="mt-5 mb-10 self-start">
-          Crear programa
+          Creación de Programa
         </Title>
 
         <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start max-w-7xl">
@@ -61,7 +64,7 @@ const ProgramCreation = () => {
               onChange={handleChange}
             />
             <Select
-              label="Maestría o Diplomado:"
+              label="Tipo de programa:"
               options={data.opciones.tipoPrograma}
               name="tipoPrograma"
               value={formData.tipoPrograma}
@@ -73,6 +76,7 @@ const ProgramCreation = () => {
               name="numeroPeriodos"
               value={formData.numeroPeriodos}
               onChange={handleChange}
+              disabled={formData.tipoPrograma === "Diplomado"} // Deshabilita si es Diplomado
             />
             <Select
               label="Nivel:"
@@ -82,14 +86,14 @@ const ProgramCreation = () => {
               onChange={handleChange}
             />
             <Select
-              label="Semestral o Cuatrimestral:"
+              label="Tipo de Periodo:"
               options={data.opciones.modelo}
               name="modelo"
               value={formData.modelo}
               onChange={handleChange}
             />
             <Select
-              label="Facultad o Escuela:"
+              label="Facultad o Dependencia:"
               options={data.opciones.facultades}
               name="facultad"
               value={formData.facultad}
