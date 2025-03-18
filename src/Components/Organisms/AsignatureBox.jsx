@@ -10,18 +10,15 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
     return savedName || "";
   });
 
+  // Leer el tipo de programa desde localStorage que se seteo en program creation como "programData"
+  const tipoPrograma = JSON.parse(
+    localStorage.getItem("programData")
+  )?.tipoPrograma;
+
   const [mails, setMails] = useState(() => {
     const savedMails = localStorage.getItem(`mails_${asignatureId}`);
     return savedMails ? JSON.parse(savedMails) : [];
   });
-
-  useEffect(() => {
-    localStorage.setItem(`asignature_${asignatureId}`, asignatureName);
-  }, [asignatureName, asignatureId]);
-
-  useEffect(() => {
-    localStorage.setItem(`mails_${asignatureId}`, JSON.stringify(mails));
-  }, [mails, asignatureId]);
 
   const handleAddMail = (event) => {
     event.preventDefault();
@@ -41,6 +38,14 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
     setMails((prev) => prev.filter((mail) => mail.id !== id));
   };
 
+  useEffect(() => {
+    localStorage.setItem(`asignature_${asignatureId}`, asignatureName);
+  }, [asignatureName, asignatureId]);
+
+  useEffect(() => {
+    localStorage.setItem(`mails_${asignatureId}`, JSON.stringify(mails));
+  }, [mails, asignatureId]);
+
   return (
     <Box width="" height="h-auto" className="relative flex flex-col p-4 gap-4">
       {isEditing && (
@@ -54,7 +59,7 @@ const AsignatureBox = ({ onRemove, asignatureId, isEditing }) => {
 
       <div className="flex flex-col">
         <Input
-          label="Asignatura:"
+          label={tipoPrograma === "Diplomado" ? "Módulo" : "Asignatura"}
           placeHolder="Nombre asignatura"
           value={asignatureName}
           onChange={(e) => setAsignatureName(e.target.value)}

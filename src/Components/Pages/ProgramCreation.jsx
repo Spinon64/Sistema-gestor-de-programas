@@ -6,6 +6,7 @@ import Input from "../Molecules/Input";
 import Ejemplo from "../../assets/ejemplo.jpg";
 import data from "../../data/programs.json";
 import { useNavigate } from "react-router";
+import FileUploadButton from "../Atoms/FileUploadButton";
 
 const ProgramCreation = () => {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ const ProgramCreation = () => {
     facultad: "",
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+
   // Manejar cambios en los inputs y selects
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +29,6 @@ const ProgramCreation = () => {
     setFormData((prevData) => {
       let newFormData = { ...prevData, [name]: value };
 
-      // Si el usuario selecciona "Diplomado", asignar automáticamente "Unico (Diplomado)"
       if (name === "tipoPrograma" && value === "Diplomado") {
         newFormData.numeroPeriodos = "Unico (Diplomado)";
       }
@@ -35,11 +37,19 @@ const ProgramCreation = () => {
     });
   };
 
+  // Manejar la carga de archivos
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+  };
+
   // Guardar en localStorage y redirigir
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos guardados:", formData);
     localStorage.setItem("programData", JSON.stringify(formData));
+    if (selectedFile) {
+      localStorage.setItem("uploadedFile", selectedFile.name);
+    }
     navigate("/crear-asignatura");
   };
 
@@ -76,7 +86,7 @@ const ProgramCreation = () => {
               name="numeroPeriodos"
               value={formData.numeroPeriodos}
               onChange={handleChange}
-              disabled={formData.tipoPrograma === "Diplomado"} // Deshabilita si es Diplomado
+              disabled={formData.tipoPrograma === "Diplomado"}
             />
             <Select
               label="Nivel:"
@@ -99,6 +109,13 @@ const ProgramCreation = () => {
               value={formData.facultad}
               onChange={handleChange}
             />
+
+            {/* Usamos el componente FileUploadButton */}
+            <FileUploadButton
+              label="Documento curricular"
+              onFileSelect={handleFileSelect}
+            />
+
             <Button
               text="Crear Programa"
               type="submit"
