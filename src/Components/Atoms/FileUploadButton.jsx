@@ -14,7 +14,7 @@ const FileUploadButton = ({ label, onFileSelect }) => {
 
   return (
     <div className="flex flex-col">
-      <label className="text-lg font-bold">{label}</label>
+      <label className="text-lg font-normal">{label}:</label>
       <div className="relative w-full mt-2">
         <input
           type="file"
