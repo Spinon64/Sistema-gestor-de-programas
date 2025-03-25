@@ -3,39 +3,30 @@ import Title from "../Atoms/Title";
 import Input from "../Molecules/Input";
 
 function ValidateCalendar() {
+  const responsables = ["Coordinador", "R.E.D", "E.A.D"];
+
   return (
     <Box
       width="w-full"
       height="h-auto"
-      className="w-full max-w-2/5 flex flex-col justify-between mb-6"
+      className="w-full max-w-4xl flex flex-col gap-4 mb-6 mx-auto"
     >
-      <div className="flex flex-row items-center justify-between">
-        <Title level="h2" className="mr-4">
-          Coordinador
-        </Title>
-        <Input
-          placeHolder="ejemplo@ucol.mx"
-          className="w-full h-[2.5rem] pl-2"
-        />
-      </div>
-      <div className="flex flex-row items-center justify-between">
-        <Title level="h2" className="mr-4">
-          R.E.D
-        </Title>
-        <Input
-          placeHolder="ejemplo@ucol.mx"
-          className="w-full h-[2.5rem] pl-2"
-        />
-      </div>
-      <div className="flex flex-row items-center justify-between">
-        <Title level="h2" className="mr-4">
-          E.A.D
-        </Title>
-        <Input
-          placeHolder="ejemplo@ucol.mx"
-          className="w-full h-[2.5rem] pl-2"
-        />
-      </div>
+      {responsables.map((label, index) => (
+        <div
+          key={index}
+          className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between w-full"
+        >
+          <div className="sm:w-1/4">
+            <Title level="h2">{label}</Title>
+          </div>
+          <div className="sm:w-3/4">
+            <Input
+              placeHolder="ejemplo@ucol.mx"
+              className="w-full h-[2.5rem] pl-2"
+            />
+          </div>
+        </div>
+      ))}
     </Box>
   );
 }
