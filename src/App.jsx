@@ -16,7 +16,8 @@ export default function App() {
         <Route path="/crear-programa" element={<CrearMaestria />} />
         <Route path="/gestion-programa" element={<GestionMaestria />} />
         <Route path="/detalles-programa/:id" element={<DetallesMaestria />} />
-        <Route path="/calendario" element={<Process />} />
+        <Route path="/calendario/:id/:periodoId" element={<Process />} />{" "}
+        {/* Ruta actualizada */}
       </Route>
     </Routes>
   );

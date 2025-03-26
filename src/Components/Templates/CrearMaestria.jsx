@@ -40,7 +40,13 @@ const CrearMaestria = () => {
       nombre,
       numPeriodos: parseInt(numPeriodos),
       tipoPeriodos,
-      periodos: Array(parseInt(numPeriodos)).fill([]), // Inicializa los semestres con un array vacío
+      // Crear periodos con IDs únicos
+      periodos: Array(parseInt(numPeriodos))
+        .fill()
+        .map(() => ({
+          id: Date.now() + Math.random(), // Genera un ID único para cada periodo
+          materias: [], // Cambiado de array vacío a objeto con materias
+        })),
       tipoProgramas,
       tipoNivel,
       tipoDependencia,
@@ -50,7 +56,7 @@ const CrearMaestria = () => {
     if (selectedFile) {
       localStorage.setItem("uploadedFile", selectedFile.name);
     }
-    navigate("/gestion-programa"); // Usar navigate para redirigir
+    navigate("/gestion-programa");
   };
 
   return (
