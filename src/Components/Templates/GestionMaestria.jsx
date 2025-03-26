@@ -1,6 +1,6 @@
 // src/components/GestionMaestria.js
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import Title from "../Atoms/Title";
 import Button from "../Atoms/Button";
 import Input from "../Molecules/Input";

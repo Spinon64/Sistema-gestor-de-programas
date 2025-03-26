@@ -1,10 +1,11 @@
-// src/components/DetallesMaestria.js
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router"; // Asegúrate de usar useParams
+import { Link, useParams } from "react-router-dom"; // Asegúrate de usar useParams
 import CalendarIcon from "../Atoms/CalendarIcon";
 import Title from "../Atoms/Title";
 import DotIcon from "../Atoms/DotIcon";
 import Button from "../Atoms/Button";
+import Typography from "@mui/material/Typography";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
 
 const DetallesMaestria = () => {
   const { id } = useParams(); // Aquí obtienes el parámetro id de la URL
@@ -26,7 +27,17 @@ const DetallesMaestria = () => {
 
   return (
     <div className="p-4 md:mx-10">
-      <Title level="h1" className="text-2xl font-semibold">
+      {/* Breadcrumbs para facilitar navegacion */}
+      <Breadcrumbs>
+        <Link underline="hover" color="inherit" to="/">
+          Programas
+        </Link>
+        <Typography sx={{ color: "text.primary" }}>
+          {maestria.nombre}
+        </Typography>
+      </Breadcrumbs>
+
+      <Title level="h1" className="text-2xl mt-5 font-semibold">
         {maestria.nombre}
       </Title>
 

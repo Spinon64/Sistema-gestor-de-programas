@@ -4,7 +4,7 @@ import SearchInput from "../Atoms/SearchInput.jsx";
 import { fetchPrograms } from "../../../public/api/fakeAPI.js";
 import Button from "../Atoms/Button.jsx";
 import Title from "../Atoms/Title.jsx";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 const Programs = () => {
   const [maestrias, setMaestrias] = useState([]);

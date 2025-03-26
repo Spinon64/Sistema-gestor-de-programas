@@ -4,6 +4,10 @@ import { format, differenceInCalendarDays } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
+/**
+ * Componente que permite seleccionar un rango de fechas
+ * Calcula automáticamente la cantidad de días y lo comunica al padre.
+ */
 export default function RangoFechas({ onChangeDays }) {
   const [range, setRange] = useState([
     {

@@ -1,6 +1,6 @@
 // src/components/CrearMaestria.js
 import React, { useState } from "react";
-import { useNavigate } from "react-router"; // Cambiado a useNavigate
+import { useNavigate } from "react-router-dom"; // Cambiado a useNavigate
 import Title from "../Atoms/Title";
 import Button from "../Atoms/Button";
 import Ejemplo from "../../assets/ejemplo.jpg";

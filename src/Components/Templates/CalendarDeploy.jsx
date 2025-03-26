@@ -3,10 +3,15 @@ import Box from "../Atoms/Box";
 import RangoFechas from "../Organisms/RangoFechas";
 import { useCallback, useState, useEffect } from "react";
 
+/**
+ * CalendarDeploy muestra fases específicas ("Implementación" y "Evaluación").
+ * Calcula y guarda la suma total de días en localStorage y notifica cambios a Process.
+ */
 function CalendarDeploy() {
   const items = ["Implementación", "Evaluación"];
   const [dias, setDias] = useState(Array(items.length).fill(0));
 
+  // Manejador para cambiar los dias por cada etapa
   const handleChangeDias = useCallback(
     (index) => (value) => {
       setDias((prevDias) => {
@@ -18,6 +23,7 @@ function CalendarDeploy() {
     []
   );
 
+  // Reduce para sumar los dias del arreglo dias iniciando en 0
   const total = dias.reduce((acc, val) => acc + val, 0);
 
   useEffect(() => {
@@ -26,7 +32,7 @@ function CalendarDeploy() {
     };
     localStorage.setItem("diasEtapas_deploy", JSON.stringify(totalDiasDeploy));
 
-    // 🔔 Notifica a Process
+    // 🔔 Notifica a Process que debe recalcular
     window.dispatchEvent(new Event("actualizarTotal"));
   }, [total]);
 
