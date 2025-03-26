@@ -16,6 +16,8 @@ const DetallesMaestria = () => {
     const savedMaestria = localStorage.getItem("maestria");
     const maestriaData = savedMaestria ? JSON.parse(savedMaestria) : null;
 
+    console.log(maestriaData);
+
     if (maestriaData && maestriaData.id === parseInt(id)) {
       setMaestria(maestriaData);
     } else {
@@ -52,12 +54,14 @@ const DetallesMaestria = () => {
             className="flex flex-col bg-white p-4 rounded-xl shadow-[0px_0px_6px_4px_rgba(0,_0,_0,_0.1)] w-full h-full "
           >
             {/* Encabezado */}
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              {maestria.tipoPeriodos === "Unico (Diplomado)"
-                ? "Periodo"
-                : `Semestre ${index + 1}`}
-              <CalendarIcon />
-            </h2>
+            <Link to="/calendario">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                {maestria.tipoPeriodos === "Unico (Diplomado)"
+                  ? "Periodo"
+                  : `Semestre ${index + 1}`}
+                <CalendarIcon />
+              </h2>
+            </Link>
 
             {/* Tabla */}
             <table className="w-full border-separate border-spacing-y-2 mb-6">

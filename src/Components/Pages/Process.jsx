@@ -1,4 +1,5 @@
-import { useState, useEffect, useParams } from "react";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import Title from "../Atoms/Title";
 import CalendarProcess from "../Templates/CalendarProcess";
 import ValidateCalendar from "../Templates/ValidateCalendar";
@@ -14,6 +15,7 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 function Process() {
   const [totalGeneral, setTotalGeneral] = useState(0);
   const { id } = useParams(); // Aquí obtienes el parámetro id de la URL
+  console.log(id);
   const [maestria, setMaestria] = useState(null);
 
   // Funcion para calcular el total general sumando todos los valores del localstorage
@@ -63,7 +65,7 @@ function Process() {
           Programas
         </Link>
         <Link underline="hover" color="inherit" to="/detalles-programa/:id">
-          {maestria.nombre}
+          {maestria?.nombre}
         </Link>
       </Breadcrumbs>
 
