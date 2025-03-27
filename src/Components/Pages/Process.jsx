@@ -60,8 +60,6 @@ function Process() {
         return Number(p.id) === periodoIdNumber;
       });
 
-      console.log("Periodo encontrado:", periodo);
-
       if (periodo) {
         setPeriodoActual(periodo);
       } else {
@@ -73,14 +71,13 @@ function Process() {
   }, [id, periodoId]);
 
   if (!maestria || !periodoActual) {
-    console.log("Maestría o periodo no encontrados");
     return <div>Cargando...</div>;
   }
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 mt-10 flex flex-col gap-6 items-center">
       {/* Breadcrumbs actualizados */}
-      <Breadcrumbs>
+      <Breadcrumbs className="self-start">
         <Link underline="hover" color="inherit" to="/">
           Programas
         </Link>
