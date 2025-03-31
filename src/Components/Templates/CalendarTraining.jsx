@@ -2,6 +2,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import Box from "../Atoms/Box";
 import Title from "../Atoms/Title";
 import RangoFechas from "../Organisms/RangoFechas";
+import SingleDatePicker from "../Organisms/SingleDatePicker";
 
 function CalendarTraining() {
   return (
@@ -27,8 +28,11 @@ function CalendarTraining() {
           </div>
 
           {/* Fecha */}
-          <div className="lg:basis-1/4">
-            <DatePicker label="Escoger fecha" />
+          <div className="lg:basis-1/4 mb-5">
+            <SingleDatePicker
+              label="Escoger fecha"
+              onChange={(date) => console.log("Fecha seleccionada:", date)}
+            />
           </div>
 
           {/* Días */}
@@ -56,8 +60,11 @@ function CalendarTraining() {
           </div>
 
           {/* Fecha */}
-          <div className="lg:basis-1/4">
-            <DatePicker label="Escoger fecha" />
+          <div className="lg:basis-1/4 mb-5">
+            <SingleDatePicker
+              label="Escoger fecha"
+              onChange={(date) => console.log("Fecha seleccionada:", date)}
+            />
           </div>
 
           {/* Días */}

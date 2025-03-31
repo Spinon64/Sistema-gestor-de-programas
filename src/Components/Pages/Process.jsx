@@ -140,7 +140,8 @@ function Process() {
           etapas={["Desarrollo", "Revisión", "Validación"]}
           periodoId={periodoId} // Pasamos el ID del periodo
         />
-        <CalendarDeploy periodoId={periodoId} /> <CalendarTraining />
+        <CalendarDeploy periodoId={periodoId} />
+        <CalendarTraining />
         {/* Pasamos el ID del periodo */}
         {/*  Total de dias sumados */}
         <div className="flex justify-end">

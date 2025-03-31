@@ -11,8 +11,8 @@ import "react-date-range/dist/theme/default.css";
 export default function RangoFechas({ onChangeDays }) {
   const [range, setRange] = useState([
     {
-      startDate: null,
-      endDate: null,
+      startDate: new Date(),
+      endDate: new Date(),
       key: "selection",
     },
   ]);
@@ -72,6 +72,7 @@ export default function RangoFechas({ onChangeDays }) {
             editableDateInputs={true}
             onChange={(item) => setRange([item.selection])}
             moveRangeOnFirstSelection={false}
+            minDate={new Date()}
             ranges={range}
           />
         </div>
