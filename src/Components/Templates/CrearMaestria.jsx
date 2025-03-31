@@ -20,14 +20,24 @@ const CrearMaestria = () => {
 
   const navigate = useNavigate(); // Usar useNavigate para la navegación
 
-  // Manejar el cambio de tipo de periodos
-  const handleTipoPeriodosChange = (e) => {
+  // Manejar el cambio del tipo de programa
+  const handleTipoPrograma = (e) => {
     const value = e.target.value;
-    setTipoPeriodos(value);
-    if (value === "Unico (Diplomado)") {
-      setNumPeriodos(1); // Forzamos a 1 período
+    setTipoProgramas(value);
+    if (value === "Diplomado") {
+      setNumPeriodos(1);
+      setTipoPeriodos("Unico (Diplomado)");
     }
   };
+
+  // Manejar el cambio de tipo de periodos
+  // const handleTipoPeriodosChange = (e) => {
+  //   const value = e.target.value;
+  //   setTipoPeriodos(value);
+  //   if (value === "Unico (Diplomado)") {
+  //     setNumPeriodos(1); // Forzamos a 1 período
+  //   }
+  // };
 
   // Manejar la carga de archivos
   const handleFileSelect = (file) => {
@@ -88,7 +98,7 @@ const CrearMaestria = () => {
               label="Tipo de Programa"
               options={data.opciones.tipoPrograma}
               value={tipoProgramas}
-              onChange={(e) => setTipoProgramas(e.target.value)}
+              onChange={handleTipoPrograma}
             />
 
             {/* Div para Tipo Periodos */}
@@ -96,7 +106,7 @@ const CrearMaestria = () => {
               label="Tipo de Periodo"
               options={data.opciones.modelo}
               value={tipoPeriodos}
-              onChange={handleTipoPeriodosChange}
+              onChange={(e) => setTipoPeriodos(e.target.value)}
             />
 
             {/* Div para Numero de Periodos */}
