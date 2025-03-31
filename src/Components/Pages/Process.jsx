@@ -7,6 +7,7 @@ import Button from "../Atoms/Button";
 import CalendarDeploy from "../Templates/CalendarDeploy";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
+import CalendarTraining from "../Templates/CalendarTraining";
 
 function Process() {
   const [totalGeneral, setTotalGeneral] = useState(0);
@@ -139,12 +140,12 @@ function Process() {
           etapas={["Desarrollo", "Revisión", "Validación"]}
           periodoId={periodoId} // Pasamos el ID del periodo
         />
-        <CalendarDeploy periodoId={periodoId} />{" "}
+        <CalendarDeploy periodoId={periodoId} /> <CalendarTraining />
         {/* Pasamos el ID del periodo */}
         {/*  Total de dias sumados */}
         <div className="flex justify-end">
           <Title level="h2" className="text-[#808080] mb-4 md:mr-[4rem]">
-            Total = {totalGeneral} días
+            Total = {totalGeneral + 2} días
           </Title>
         </div>
       </div>

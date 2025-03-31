@@ -1,10 +1,20 @@
 import { Route, Routes } from "react-router-dom"; // Aquí usas Routes en lugar de BrowserRouter
-import Programs from "./Components/Pages/Programs";
 import Layout from "./Components/Pages/Layout";
-import CrearMaestria from "./Components/Templates/CrearMaestria";
-import GestionMaestria from "./Components/Templates/GestionMaestria";
-import DetallesMaestria from "./Components/Pages/DetallesMaestria";
-import Process from "./Components/Pages/Process";
+import Programs from "./Components/Pages/Programs";
+import { lazy } from "react";
+import FaseAnalisis from "./Components/Templates/FaseAnalisis";
+import Revision from "./Components/Templates/Revision";
+
+const CrearMaestria = lazy(() =>
+  import("./Components/Templates/CrearMaestria")
+);
+const GestionMaestria = lazy(() =>
+  import("./Components/Templates/GestionMaestria")
+);
+const DetallesMaestria = lazy(() =>
+  import("./Components/Pages/DetallesMaestria")
+);
+const Process = lazy(() => import("./Components/Pages/Process"));
 
 export default function App() {
   return (
@@ -17,7 +27,10 @@ export default function App() {
         <Route path="/gestion-programa" element={<GestionMaestria />} />
         <Route path="/detalles-programa/:id" element={<DetallesMaestria />} />
         <Route path="/calendario/:id/:periodoId" element={<Process />} />{" "}
-        {/* Ruta actualizada */}
+        {/* AUN NO ES ACCESIBLE */}
+        <Route path="/phase-analysis" element={<FaseAnalisis />} />{" "}
+        {/* AUN NO ES ACCESIBLE */}
+        <Route path="/revision" element={<Revision />} />{" "}
       </Route>
     </Routes>
   );

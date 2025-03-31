@@ -28,67 +28,70 @@ const Programs = () => {
     );
 
   return (
-    <div className="px-8 mx-10 mb-5">
-      {/* Barra de búsqueda en la parte superior */}
-      <div className="flex md:justify-between flex-col lg:flex-row items-start lg:items-center mb-6">
-        <Title level="h1" className="mt-5">
-          Programas Académicos
-        </Title>
-        <div className="flex flex-col items-start lg:flex-row   gap-4 mt-6 ">
-          <Link to="/crear-programa">
-            <Button text="+ Crear Programa" className="text-sm font-thin" />
-          </Link>
+    <main>
+      <div className="mb-5 mx-12">
+        {/* Barra de búsqueda en la parte superior */}
+        <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row justify-between mb-6">
+          <Title level="h1" className="mt-5 text-center md:text-left">
+            Programas Académicos
+          </Title>
+          <div className="flex flex-col items-start lg:flex-row gap-3 mt-6 w-max">
+            <Link to="/crear-programa">
+              <Button className="text-sm font-thin" text="+ Crear Programa" />
+            </Link>
 
-          <SearchInput
-            value={searchTerm}
-            placeholder="Buscar..."
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+            <SearchInput
+              value={searchTerm}
+              placeholder="Buscar..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Sección de Maestrías */}
+        <div className="mb-8">
+          <Title level="h2" className="mb-4 underline underline-offset-4">
+            Maestrías
+          </Title>
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-7"> */}
+          <div className="mt-6 mx-2 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+            {filteredPrograms(maestrias).length > 0 ? (
+              filteredPrograms(maestrias).map((program) => (
+                <Card
+                  key={program.id}
+                  title={program.title}
+                  faculty={program.faculty}
+                  model={program.model}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500">No se encontraron maestrías.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Sección de Diplomados */}
+        <div>
+          <Title level="h2" className="mb-4 underline underline-offset-4">
+            Diplomados
+          </Title>
+          <div className="mt-6 mx-2 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+            {filteredPrograms(diplomados).length > 0 ? (
+              filteredPrograms(diplomados).map((program) => (
+                <Card
+                  key={program.id}
+                  title={program.title}
+                  faculty={program.faculty}
+                  model={program.model}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500">No se encontraron diplomados.</p>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Sección de Maestrías */}
-      <div className="mb-8">
-        <Title level="h2" className="mb-4 underline underline-offset-4">
-          Maestrías
-        </Title>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-7">
-          {filteredPrograms(maestrias).length > 0 ? (
-            filteredPrograms(maestrias).map((program) => (
-              <Card
-                key={program.id}
-                title={program.title}
-                faculty={program.faculty}
-                model={program.model}
-              />
-            ))
-          ) : (
-            <p className="text-gray-500">No se encontraron maestrías.</p>
-          )}
-        </div>
-      </div>
-
-      {/* Sección de Diplomados */}
-      <div>
-        <Title level="h2" className="mb-4 underline underline-offset-4">
-          Diplomados
-        </Title>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
-          {filteredPrograms(diplomados).length > 0 ? (
-            filteredPrograms(diplomados).map((program) => (
-              <Card
-                key={program.id}
-                title={program.title}
-                faculty={program.faculty}
-                model={program.model}
-              />
-            ))
-          ) : (
-            <p className="text-gray-500">No se encontraron diplomados.</p>
-          )}
-        </div>
-      </div>
-    </div>
+    </main>
   );
 };
 

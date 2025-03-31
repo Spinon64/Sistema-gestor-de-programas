@@ -60,10 +60,13 @@ const CrearMaestria = () => {
   };
 
   return (
-    <div className="mx-auto mt-5 flex w-full max-w-[110rem] flex-1 flex-col px-4 sm:px-6 lg:px-8 lg:mt-20 lg:items-center">
+    <div className="mx-auto flex w-full max-w-[110rem] flex-1 flex-col px-4 sm:px-6 lg:px-8 lg:items-center">
+      <div className="flex flex-row justify-start w-full mt-2">
+        {/*Aqui en lugar de la <p></p> podriamos meter una progressBar */}
+      </div>
       <div className="mx-10 flex flex-col justify-center">
         <Title level="h1" className="mt-5 mb-10 self-start">
-          Crear nueva Maestría
+          Crear nuevo programa
         </Title>
         <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start max-w-7xl">
           <form
@@ -79,11 +82,29 @@ const CrearMaestria = () => {
               value={nombre}
               type="text"
             />
+
+            {/* Select Para Tipo Programa */}
+            <Select
+              label="Tipo de Programa"
+              options={data.opciones.tipoPrograma}
+              value={tipoProgramas}
+              onChange={(e) => setTipoProgramas(e.target.value)}
+            />
+
+            {/* Div para Tipo Periodos */}
+            <Select
+              label="Tipo de Periodo"
+              options={data.opciones.modelo}
+              value={tipoPeriodos}
+              onChange={handleTipoPeriodosChange}
+            />
+
             {/* Div para Numero de Periodos */}
             <div className="mb-4">
               <Title level="h4" className="mb-2">
                 Número de Periodos
               </Title>
+
               <select
                 value={numPeriodos}
                 onChange={(e) => setNumPeriodos(e.target.value)}
@@ -101,25 +122,13 @@ const CrearMaestria = () => {
                 )}
               </select>
             </div>
-            {/* Div para Tipo Periodos */}
-            <Select
-              label="Tipo de Periodo"
-              options={data.opciones.modelo}
-              value={tipoPeriodos}
-              onChange={handleTipoPeriodosChange}
-            />
-            {/* Select Para Tipo Programa */}
-            <Select
-              label="Tipo de Programa"
-              options={data.opciones.tipoPrograma}
-              value={tipoProgramas}
-              onChange={(e) => setTipoProgramas(e.target.value)}
-            />
+
             {/* Select Para Nivel */}
             <Select
               label="Nivel"
               options={data.opciones.nivel}
               value={tipoNivel}
+              className="opacity-50"
               onChange={(e) => setTipoNivel(e.target.value)}
             />
             {/* Div para Facultad o Dependencia */}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Uploader from "../../assets/uploader.svg";
 
 const FileUploadButton = ({ label, onFileSelect }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,15 +20,18 @@ const FileUploadButton = ({ label, onFileSelect }) => {
         <input
           type="file"
           id="fileInput"
+          accept=".pdf"
           onChange={handleFileChange}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
         <div className="bg-[#E5E7EB] text-black flex items-center justify-between px-4 py-2 rounded-lg">
           <label
             htmlFor="fileInput"
-            className="cursor-pointer border border-black px-3 py-1 rounded-lg"
+            className="cursor-pointer border border-black px-3 py-1 rounded-lg flex flex-row items-center"
           >
-            Elige archivo
+            {/* Esta es la menera correcta de importar un icono, para que tenga menos carga y mejor performance */}
+            <img src={Uploader} alt="" className="size-5 mr-2" />
+            Subir documento
           </label>
           <span className="ml-3">
             {selectedFile ? selectedFile.name : "Archivo sin elegir"}

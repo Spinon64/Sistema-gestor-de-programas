@@ -26,9 +26,9 @@ const GestionMaestria = () => {
     console.log(maestria);
   };
 
-  // Handle para agregar una materia
+  // Handle para agregar una asignatura
   // Recibe el ID del periodo para saber a cual agregar la materia
-  const handleAddMateria = (periodoId) => {
+  const handleAddAsignatura = (periodoId) => {
     const newMateria = {
       id: Date.now(), // Agregamos un ID único a la materia
       nombre: "",
@@ -198,7 +198,7 @@ const GestionMaestria = () => {
                   )}
                   <Input
                     type="text"
-                    label="Nombre de la materia:"
+                    label="Nombre de la asignatura:"
                     value={materia.nombre}
                     onChange={(e) =>
                       handleChangeMateria(
@@ -211,10 +211,10 @@ const GestionMaestria = () => {
                     className={`p-2 border border-gray-300 rounded w-full ${
                       !isEditing ? "bg-gray-200 cursor-not-allowed" : ""
                     }`}
-                    placeHolder="Nombre de la materia"
+                    placeHolder="Nombre de la asingatura"
                   />
                   <hr className="my-4" />
-                  <Title level="h4">Correo del profesor:</Title>
+                  <Title level="h4">Correo del facilitador:</Title>
                   {materia.profesores.map((profesor, profesorIndex) => (
                     <div
                       key={profesorIndex}
@@ -239,7 +239,7 @@ const GestionMaestria = () => {
                           className={`p-2 border border-gray-300 rounded w-full ${
                             !isEditing ? "bg-gray-200 cursor-not-allowed" : ""
                           }`}
-                          placeHolder="Correo del profesor"
+                          placeHolder="Correo del facilitador"
                         />
                       </div>
 
@@ -271,7 +271,7 @@ const GestionMaestria = () => {
 
             {isEditing && (
               <div
-                onClick={() => handleAddMateria(periodo.id)}
+                onClick={() => handleAddAsignatura(periodo.id)}
                 className="flex flex-col items-center justify-center bg-white border-dashed border-2 border-gray-300 text-gray-500 p-4 rounded w-[250px] cursor-pointer hover:bg-gray-50"
               >
                 <span className="text-xl font-semibold">+</span>
