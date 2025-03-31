@@ -19,11 +19,31 @@ const GestionMaestria = () => {
     }
   }, []);
 
-  // Handle para establecer si esta editando o no
+  // Handle para establecer si se está editando o no
   const hanldeIsEditing = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Evita que el formulario se recargue al hacer submit
+
+    // Si ya está en modo edición
+    if (isEditing) {
+      // Recorre cada periodo de la maestría con .some (devuelve true si alguna condición se cumple)
+      const camposIncompletos = maestria.periodos.some((periodo) =>
+        // En cada periodo, revisa si hay materias
+        (periodo.materias || []).some(
+          (materia) =>
+            // Revisa si el nombre de la materia está vacío (sin espacios)
+            !materia.nombre.trim() ||
+            // Revisa si algún profesor en esa materia tiene su campo vacío
+            materia.profesores.some((prof) => !prof.trim())
+        )
+      );
+      // Si encontró algún campo incompleto (nombre de materia o profesor vacío)
+      if (camposIncompletos) {
+        alert("Completa todos los campos antes de guardar.");
+        return;
+      }
+    }
+    // Cambia el estado de edición: si estaba editando, pasa a no editar, y viceversa
     setIsEditing((prev) => !prev);
-    console.log(maestria);
   };
 
   // Handle para agregar una asignatura
@@ -141,7 +161,7 @@ const GestionMaestria = () => {
   if (!maestria) return <div>Cargando...</div>;
 
   return (
-    <div className="p-4 max-w-9xl mx-10">
+    <form id="form-asignaturas" className="p-4 max-w-9xl mx-10">
       <div className="flex justify-between">
         <Title level="h1" className="text-2xl font-semibold">
           {maestria.nombre}
@@ -151,12 +171,14 @@ const GestionMaestria = () => {
             className="mt-6 bg-[#474c5b] text-white min-w-[10rem] h-[2.5rem] content-center rounded-lg w-auto text-center"
             onClick={hanldeIsEditing}
             text={isEditing ? "Guardar" : "Editar"}
+            form="form-asignaturas"
           ></Button>
           {!isEditing && (
             <Link to={`/detalles-programa/${maestria.id}`}>
               <Button
                 text="Continuar"
                 className="font-normal w-[14rem] h-[2.5rem] text-sm mt-6"
+                type="button"
               />
             </Link>
           )}
@@ -186,15 +208,18 @@ const GestionMaestria = () => {
                   key={materia.id}
                   className="relative bg-white p-4 rounded-lg shadow-[0px_0px_6px_4px_rgba(0,_0,_0,_0.1)] w-[300px]"
                 >
-                  {isEditing && (
+                  {isEditing && periodo.materias.length >= 2 ? (
                     <button
                       onClick={() =>
                         handleRemoveMateria(periodo.id, materia.id)
                       }
                       className="absolute top-2 right-2 text-gray-500 hover:text-red-500 transition"
+                      type="button"
                     >
                       <DeleteIcon />
                     </button>
+                  ) : (
+                    ""
                   )}
                   <Input
                     type="text"
@@ -222,7 +247,7 @@ const GestionMaestria = () => {
                     >
                       <div className="flex-grow">
                         <Input
-                          type="text"
+                          type="email"
                           value={profesor}
                           onChange={(e) =>
                             handleChangeMateria(
@@ -243,7 +268,8 @@ const GestionMaestria = () => {
                         />
                       </div>
 
-                      {isEditing && (
+                      {/* Si el array de profesores es mayor o igual a 2 se muestra el boton de eliminar facilitador */}
+                      {isEditing && materia.profesores.length >= 2 ? (
                         <button
                           onClick={() =>
                             handleRemoveProfesor(
@@ -252,24 +278,28 @@ const GestionMaestria = () => {
                               profesorIndex
                             )
                           }
+                          type="button"
                           className="text-gray-500 hover:text-red-500 transition pl-2"
                         >
                           <DeleteIcon />
                         </button>
+                      ) : (
+                        ""
                       )}
                     </div>
                   ))}
                   {isEditing && (
                     <Button
                       text="Agregar profesor"
+                      type="button"
                       onClick={() => handleAddProfesor(periodo.id, materia.id)}
                       className="h-[2.5rem] w-full mt-4"
                     />
                   )}
                 </div>
               ))}
-
-            {isEditing && (
+            {/* Si el array de materias es mayor a 4 ya no se mostrara la opcion para agregar otra */}
+            {isEditing && periodo.materias.length <= 3 ? (
               <div
                 onClick={() => handleAddAsignatura(periodo.id)}
                 className="flex flex-col items-center justify-center bg-white border-dashed border-2 border-gray-300 text-gray-500 p-4 rounded w-[250px] cursor-pointer hover:bg-gray-50"
@@ -277,11 +307,13 @@ const GestionMaestria = () => {
                 <span className="text-xl font-semibold">+</span>
                 <span>Agregar nueva asignatura</span>
               </div>
+            ) : (
+              ""
             )}
           </div>
         </div>
       ))}
-    </div>
+    </form>
   );
 };
 

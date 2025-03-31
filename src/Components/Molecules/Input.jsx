@@ -9,6 +9,7 @@ const Input = ({
   onChange,
   name,
   disabled,
+  type,
 }) => {
   return (
     <div>
@@ -16,13 +17,13 @@ const Input = ({
         {label}
       </Title>
       <input
-        type="text"
         placeholder={placeHolder}
         className={` border-1 border-gray-400  rounded-md h-12 ${className}`}
         value={value}
         onChange={onChange}
         name={name}
         disabled={disabled}
+        type={type}
         required
       />
     </div>

@@ -46,7 +46,13 @@ const CrearMaestria = () => {
         .fill()
         .map(() => ({
           id: Date.now() + Math.random(), // Genera un ID único para cada periodo
-          materias: [], // Cambiado de array vacío a objeto con materias
+          materias: [
+            {
+              id: Date.now() + Math.random(), // Agregamos un ID único a la materia
+              nombre: "",
+              profesores: [""],
+            },
+          ], // Cambiado de array vacío a objeto con materias
         })),
       tipoProgramas,
       tipoNivel,

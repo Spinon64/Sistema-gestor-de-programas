@@ -23,6 +23,7 @@ const FileUploadButton = ({ label, onFileSelect }) => {
           accept=".pdf"
           onChange={handleFileChange}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          required
         />
         <div className="bg-[#E5E7EB] text-black flex items-center justify-between px-4 py-2 rounded-lg">
           <label
