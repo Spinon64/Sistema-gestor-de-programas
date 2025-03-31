@@ -23,6 +23,7 @@ const Input = ({
         onChange={onChange}
         name={name}
         disabled={disabled}
+        required
       />
     </div>
   );

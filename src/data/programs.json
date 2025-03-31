@@ -53,7 +53,7 @@
   ],
   "opciones": {
     "tipoPrograma": ["Maestría", "Diplomado"],
-    "numeroPeriodos": ["Unico (Diplomado)", 1, 2, 3, 4, 5],
+    "numeroPeriodos": [1, 2, 3, 4, 5],
     "nivel": [
       "Media superior",
       "Superior",

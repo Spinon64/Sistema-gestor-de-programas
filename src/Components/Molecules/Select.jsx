@@ -21,6 +21,7 @@ const Select = ({
         value={value} // Asigna el valor correctamente
         onChange={onChange} // Llama a la función `handleChange` en `ProgramCreation.js`
         disabled={disabled}
+        required
       >
         <option value="">Seleccione una opción</option>
         {options.map((option, index) => (

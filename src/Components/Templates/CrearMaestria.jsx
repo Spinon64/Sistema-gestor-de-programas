@@ -61,10 +61,7 @@ const CrearMaestria = () => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[110rem] flex-1 flex-col px-4 sm:px-6 lg:px-8 lg:items-center">
-      <div className="flex flex-row justify-start w-full mt-2">
-        {/*Aqui en lugar de la <p></p> podriamos meter una progressBar */}
-      </div>
+    <div className="mx-auto flex w-full max-w-[110rem] mb-3 flex-1 flex-col px-4 sm:px-6 lg:px-8 lg:items-center">
       <div className="mx-10 flex flex-col justify-center">
         <Title level="h1" className="mt-5 mb-10 self-start">
           Crear nuevo programa
@@ -108,24 +105,16 @@ const CrearMaestria = () => {
                 Número de Periodos
               </Title>
 
-              <select
+              <input
+                type="number"
+                required
                 value={numPeriodos}
                 onChange={(e) => setNumPeriodos(e.target.value)}
                 disabled={tipoProgramas === "Diplomado"}
                 className={`${
                   tipoProgramas === "Diplomado" ? "opacity-50" : ""
                 } border border-gray-300 bg-gray-200 rounded-md px-4 py-2 focus:outline-none focus-ring-2 focus:ring-gray-400 w-full h-12`}
-              >
-                {tipoPeriodos === "Unico (Diplomado)" ? (
-                  <option value={1}>1</option>
-                ) : (
-                  [1, 2, 3, 4, 5].map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
-                  ))
-                )}
-              </select>
+              ></input>
             </div>
 
             {/* Select Para Nivel */}
@@ -149,7 +138,7 @@ const CrearMaestria = () => {
             <Button
               text="Crear Programa"
               type="submit"
-              className="h-[2.5rem] w-full"
+              className="h-12 lg:mt-9 w-full"
             >
               Crear Maestría
             </Button>
