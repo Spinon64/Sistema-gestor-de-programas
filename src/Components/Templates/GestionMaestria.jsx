@@ -21,28 +21,31 @@ const GestionMaestria = () => {
 
   // Handle para establecer si se está editando o no
   const hanldeIsEditing = (e) => {
-    e.preventDefault(); // Evita que el formulario se recargue al hacer submit
+    const esEmailValido = (email) => {
+      const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regexEmail.test(email);
+    };
+    e.preventDefault();
 
-    // Si ya está en modo edición
     if (isEditing) {
-      // Recorre cada periodo de la maestría con .some (devuelve true si alguna condición se cumple)
-      const camposIncompletos = maestria.periodos.some((periodo) =>
-        // En cada periodo, revisa si hay materias
-        (periodo.materias || []).some(
-          (materia) =>
-            // Revisa si el nombre de la materia está vacío (sin espacios)
-            !materia.nombre.trim() ||
-            // Revisa si algún profesor en esa materia tiene su campo vacío
-            materia.profesores.some((prof) => !prof.trim())
-        )
+      const camposInvalidos = maestria.periodos.some((periodo) =>
+        (periodo.materias || []).some((materia) => {
+          const nombreVacio = !materia.nombre.trim();
+          const profesoresInvalidos = materia.profesores.some(
+            (prof) => !prof.trim() || !esEmailValido(prof.trim())
+          );
+          return nombreVacio || profesoresInvalidos;
+        })
       );
-      // Si encontró algún campo incompleto (nombre de materia o profesor vacío)
-      if (camposIncompletos) {
-        alert("Completa todos los campos antes de guardar.");
+
+      if (camposInvalidos) {
+        alert(
+          "Completa todos los campos correctamente antes de guardar. Verifica los nombres y que los correos sean válidos."
+        );
         return;
       }
     }
-    // Cambia el estado de edición: si estaba editando, pasa a no editar, y viceversa
+
     setIsEditing((prev) => !prev);
   };
 
