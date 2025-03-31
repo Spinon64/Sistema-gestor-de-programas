@@ -30,15 +30,6 @@ const CrearMaestria = () => {
     }
   };
 
-  // Manejar el cambio de tipo de periodos
-  // const handleTipoPeriodosChange = (e) => {
-  //   const value = e.target.value;
-  //   setTipoPeriodos(value);
-  //   if (value === "Unico (Diplomado)") {
-  //     setNumPeriodos(1); // Forzamos a 1 período
-  //   }
-  // };
-
   // Manejar la carga de archivos
   const handleFileSelect = (file) => {
     setSelectedFile(file);
@@ -106,7 +97,9 @@ const CrearMaestria = () => {
               label="Tipo de Periodo"
               options={data.opciones.modelo}
               value={tipoPeriodos}
+              disabled={tipoProgramas === "Diplomado"}
               onChange={(e) => setTipoPeriodos(e.target.value)}
+              className={tipoProgramas === "Diplomado" ? "opacity-50" : ""}
             />
 
             {/* Div para Numero de Periodos */}
@@ -118,8 +111,10 @@ const CrearMaestria = () => {
               <select
                 value={numPeriodos}
                 onChange={(e) => setNumPeriodos(e.target.value)}
-                disabled={tipoPeriodos === "Unico (Diplomado)"}
-                className="border border-gray-300 bg-gray-200 rounded-md px-4 py-2 focus:outline-none focus-ring-2 focus:ring-gray-400 w-full h-12"
+                disabled={tipoProgramas === "Diplomado"}
+                className={`${
+                  tipoProgramas === "Diplomado" ? "opacity-50" : ""
+                } border border-gray-300 bg-gray-200 rounded-md px-4 py-2 focus:outline-none focus-ring-2 focus:ring-gray-400 w-full h-12`}
               >
                 {tipoPeriodos === "Unico (Diplomado)" ? (
                   <option value={1}>1</option>
@@ -138,7 +133,6 @@ const CrearMaestria = () => {
               label="Nivel"
               options={data.opciones.nivel}
               value={tipoNivel}
-              className="opacity-50"
               onChange={(e) => setTipoNivel(e.target.value)}
             />
             {/* Div para Facultad o Dependencia */}
