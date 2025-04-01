@@ -4,6 +4,7 @@ import Programs from "./Components/Pages/Programs";
 import { lazy } from "react";
 import FaseAnalisis from "./Components/Templates/FaseAnalisis";
 import Revision from "./Components/Templates/Revision";
+import PlanningCalendar from "./Components/Templates/PlanningCalendar";
 
 const CrearMaestria = lazy(() =>
   import("./Components/Templates/CrearMaestria")
@@ -31,6 +32,8 @@ export default function App() {
         <Route path="/phase-analysis" element={<FaseAnalisis />} />{" "}
         {/* AUN NO ES ACCESIBLE */}
         <Route path="/revision" element={<Revision />} />{" "}
+        {/* RUTA DE LA TEMPLATE DEL CALENDARIO */}
+        <Route path="/calendar-preview" element={<PlanningCalendar />} />{" "}
       </Route>
     </Routes>
   );
