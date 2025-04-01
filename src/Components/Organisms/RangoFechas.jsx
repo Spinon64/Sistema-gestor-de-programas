@@ -4,23 +4,53 @@ import { format, differenceInCalendarDays } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-/**
- * Componente que permite seleccionar un rango de fechas
- * Calcula automáticamente la cantidad de días y lo comunica al padre.
- */
-export default function RangoFechas({ onChangeDays }) {
+export default function RangoFechas({ onChangeDays, initialRange = [] }) {
   const [range, setRange] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: initialRange[0] || new Date(),
+      endDate: initialRange[1] || new Date(),
       key: "selection",
     },
   ]);
+
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-  const prevDays = useRef(null); // <- nuevo
+  const prevDays = useRef(null);
 
-  // Cerrar al hacer clic fuera del componente
+  // 💡 NUEVO: actualizar rango si cambió el initialRange desde el padre
+  useEffect(() => {
+    if (
+      initialRange.length === 2 &&
+      initialRange[0] instanceof Date &&
+      initialRange[1] instanceof Date
+    ) {
+      setRange([
+        {
+          startDate: initialRange[0],
+          endDate: initialRange[1],
+          key: "selection",
+        },
+      ]);
+    }
+  }, [initialRange]);
+
+  // Calcular días y notificar
+  useEffect(() => {
+    const { startDate, endDate } = range[0];
+    let newDays = 0;
+
+    if (startDate && endDate) {
+      newDays = differenceInCalendarDays(endDate, startDate) + 1;
+      if (newDays < 0) newDays = 0;
+    }
+
+    if (prevDays.current !== newDays) {
+      prevDays.current = newDays;
+      onChangeDays?.({ dias: newDays, range: [startDate, endDate] });
+    }
+  }, [range, onChangeDays]);
+
+  // Cierre al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -30,21 +60,6 @@ export default function RangoFechas({ onChangeDays }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Calcular días y evitar loop infinito
-  useEffect(() => {
-    const { startDate, endDate } = range[0];
-    let newDays = 0;
-    if (startDate && endDate) {
-      newDays = differenceInCalendarDays(endDate, startDate) + 1;
-      if (newDays < 0) newDays = 0;
-    }
-
-    if (prevDays.current !== newDays) {
-      prevDays.current = newDays;
-      onChangeDays?.(newDays);
-    }
-  }, [range, onChangeDays]);
 
   const formatOrPlaceholder = (date) =>
     date ? format(date, "dd MMM yyyy") : "DD / MM / YY";

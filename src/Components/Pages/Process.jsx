@@ -15,6 +15,33 @@ function Process() {
   const [maestria, setMaestria] = useState(null);
   const [periodoActual, setPeriodoActual] = useState(null);
 
+  const getFechasOcupadas = () => {
+    const ids = ["analisis", "diseno", "desarrollo", "deploy"];
+    const fechas = [];
+
+    ids.forEach((id) => {
+      const raw = localStorage.getItem(`fechasEtapas_${id}`);
+      if (raw) {
+        const etapas = JSON.parse(raw);
+        etapas.forEach(([start, end]) => {
+          if (start && end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            let current = new Date(startDate);
+            while (current <= endDate) {
+              fechas.push(new Date(current));
+              current.setDate(current.getDate() + 1);
+            }
+          }
+        });
+      }
+    });
+
+    return fechas;
+  };
+
+  const fechasOcupadas = getFechasOcupadas();
+
   const calcularTotal = () => {
     const ids = ["analisis", "diseno", "desarrollo", "deploy", "pedagogica"];
     const total = ids.reduce((acc, id) => {
@@ -130,7 +157,7 @@ function Process() {
           etapas={["Análisis", "Revisión", "Validación"]}
           periodoId={periodoId} // Pasamos el ID del periodo
         />
-        <CapacitacionPedagogica />
+        <CapacitacionPedagogica disabledDates={fechasOcupadas} />
         <CalendarProcess
           id="diseno"
           etapas={["Diseño", "Revisión", "Validación"]}
@@ -143,7 +170,8 @@ function Process() {
         />
 
         {/* Pasamos el ID del periodo */}
-        <CalendarDeploy periodoId={periodoId} />
+        {/* <CalendarDeploy periodoId={periodoId} /> */}
+        <CalendarDeploy disabledDates={fechasOcupadas} />
 
         {/*  Total de dias sumados */}
         <div className="flex justify-end">

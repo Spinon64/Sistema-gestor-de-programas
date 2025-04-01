@@ -1,44 +1,56 @@
+// CalendarProcess.jsx
 import { useState, useCallback, useEffect } from "react";
 import Title from "../Atoms/Title";
 import Box from "../Atoms/Box";
 import RangoFechas from "../Organisms/RangoFechas";
+import { addDays } from "date-fns";
 
-// CalendarProcess permite seleccionar rangos de fechas por etapas
-// Guarda el total de dias de cada grupo en localtorage y notifica cambios al componente padre
 function CalendarProcess({
-  id = "proceso", // ID unico para identificar este conjunto de etapas en el localstorage
-  etapas = ["Etapa", "Revisión", "Validación"], // Etapas mostradas por este calendario
+  id = "proceso",
+  etapas = ["Etapa", "Revisión", "Validación"],
 }) {
-  // Estado que guarda los dias calculador por etapa
-  const [dias, setDias] = useState(Array(etapas.length).fill(0));
+  const [dias, setDias] = useState(etapas.map(() => ({ dias: 0, range: [] })));
 
-  // Funcion para actualizar los dias cuando cambian las fechas
   const handleChangeDias = useCallback(
-    // Funcion index recibe index y devuelve segunda funcon value  y se usara para actualizar el estado de dias
-    (index) => (value) => {
-      setDias((prevDias) => {
-        const nuevosDias = [...prevDias]; // Copia del estado actual
-        nuevosDias[index] = value; // Actualiza el valor en el indice especifico
-        return nuevosDias; // Devuelve el nuevo array con el valor actualizado
-      });
-    },
-    []
+    (index) =>
+      ({ dias, range }) => {
+        setDias((prevDias) => {
+          const nuevosDias = [...prevDias];
+          nuevosDias[index] = { dias, range };
+
+          // Autocompletar las siguientes etapas si es la primera
+          if (index === 0 && dias > 0 && range.length === 2) {
+            let lastEnd = new Date(range[1]);
+            for (let i = 1; i < etapas.length; i++) {
+              const nextStart = addDays(lastEnd, 1);
+              const nextEnd = addDays(nextStart, dias - 1);
+              nuevosDias[i] = {
+                dias,
+                range: [nextStart, nextEnd],
+              };
+              lastEnd = nextEnd;
+            }
+          }
+
+          return nuevosDias;
+        });
+      },
+    [etapas.length]
   );
 
-  // Calculamos el total de dias sumando todos los dias por etapa
-  const total = dias.reduce((acc, val) => acc + val, 0);
+  const total = dias.reduce((acc, val) => acc + (val?.dias || 0), 0);
 
-  // Guardamos el total de dias en localstorage cada vez que cambia
   useEffect(() => {
+    const fechasPorEtapa = etapas.map((_, index) => dias[index]?.range || []);
+    localStorage.setItem(`fechasEtapas_${id}`, JSON.stringify(fechasPorEtapa));
+
     const totalDiasEtapas = {
       id,
       totalDias: total,
     };
     localStorage.setItem(`diasEtapas_${id}`, JSON.stringify(totalDiasEtapas));
-
-    // 🔔 Notifica a Process que debe recalcular el total general
     window.dispatchEvent(new Event("actualizarTotal"));
-  }, [total, id]);
+  }, [total, id, dias, etapas]);
 
   return (
     <Box
@@ -46,7 +58,6 @@ function CalendarProcess({
       height="h-auto"
       className="flex flex-col gap-4 p-4 mb-6 max-w-3xl mx-auto"
     >
-      {/* Nombre de la etapa */}
       <div className="flex flex-col gap-6 w-full">
         {etapas.map((etapa, index) => (
           <div key={index} className="flex flex-col gap-2">
@@ -56,29 +67,30 @@ function CalendarProcess({
                   level="h3"
                   className={index === 0 ? "font-bold" : "text-[#808080]"}
                 >
-                  {index === 0 ? etapa : `↳${etapa}`}
+                  {index === 0 ? etapa : `↳ ${etapa}`}
                 </Title>
               </div>
 
-              {/* Seleccion de fechas */}
               <div className="lg:basis-1/2">
-                <RangoFechas onChangeDays={handleChangeDias(index)} />
+                <RangoFechas
+                  onChangeDays={handleChangeDias(index)}
+                  initialRange={dias[index]?.range || []}
+                />
               </div>
 
-              {/* Visualizacion de dias */}
               <div className="lg:basis-1/4 text-right">
                 <Title level="h3" className="text-[#808080]">
-                  {dias[index]} {dias[index] === 1 ? "Día" : "Días"}
+                  {dias[index]?.dias || 0}{" "}
+                  {dias[index]?.dias === 1 ? "Día" : "Días"}
                 </Title>
               </div>
-              <hr className="border-t border-gray-400 mt-1" />
             </div>
+            <hr className="border-t border-gray-400 mt-1" />
           </div>
         ))}
       </div>
-      <hr className="border-t border-gray-200 mt-4" />
 
-      {/* Total por conjunto de etapas */}
+      <hr className="border-t border-gray-200 mt-4" />
       <div className="flex justify-end">
         <Title level="h3" className="text-[#808080]">
           Total = {total} {total === 1 ? "día" : "días"}

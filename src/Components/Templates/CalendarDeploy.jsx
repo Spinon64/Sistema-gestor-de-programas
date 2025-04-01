@@ -5,37 +5,39 @@ import { useCallback, useState, useEffect } from "react";
 import SingleDatePicker from "../Organisms/SingleDatePicker";
 
 /**
- * CalendarDeploy muestra fases específicas ("Implementación" y "Evaluación").
- * Calcula y guarda la suma total de días en localStorage y notifica cambios a Process.
+ * CalendarDeploy muestra fases específicas ("Implementación", "Capacitación Tecnológica", "Evaluación").
+ * Guarda la suma total de días y los rangos seleccionados en localStorage.
  */
-function CalendarDeploy() {
+function CalendarDeploy({ disabledDates = [] }) {
   const items = ["Implementación", "Capacitacion Tecnologica", "Evaluación"];
-  const [dias, setDias] = useState(Array(items.length).fill(0));
+  const [dias, setDias] = useState(Array(items.length).fill({ dias: 0 }));
 
-  // Manejador para cambiar los dias por cada etapa
   const handleChangeDias = useCallback(
     (index) => (value) => {
+      const nuevoValor = typeof value === "object" ? value : { dias: value };
       setDias((prevDias) => {
         const nuevosDias = [...prevDias];
-        nuevosDias[index] = value;
+        nuevosDias[index] = nuevoValor;
         return nuevosDias;
       });
     },
     []
   );
 
-  // Reduce para sumar los dias del arreglo dias iniciando en 0
-  const total = dias.reduce((acc, val) => acc + val, 0);
+  const total = dias.reduce((acc, val) => acc + (val?.dias || 0), 0);
 
   useEffect(() => {
-    const totalDiasDeploy = {
-      totalDias: total,
-    };
+    // Guardar total
+    const totalDiasDeploy = { totalDias: total };
     localStorage.setItem("diasEtapas_deploy", JSON.stringify(totalDiasDeploy));
 
-    // 🔔 Notifica a Process que debe recalcular
+    // Guardar rangos de fechas
+    const fechasPorEtapa = dias.map((etapa) => etapa.range || []);
+    localStorage.setItem("fechasEtapas_deploy", JSON.stringify(fechasPorEtapa));
+
+    // Notificar actualización
     window.dispatchEvent(new Event("actualizarTotal"));
-  }, [total]);
+  }, [dias, total]);
 
   return (
     <Box
@@ -65,20 +67,30 @@ function CalendarDeploy() {
                     <option>Virtual</option>
                   </select>
                   <SingleDatePicker
-                    onChangeDays={handleChangeDias(index)}
+                    onChangeDays={(dias) => handleChangeDias(index)({ dias })}
                     className="!w-[250px] h-[3rem]"
                     label=""
+                    disabledDates={disabledDates}
                   />
                 </div>
               ) : (
-                <RangoFechas onChangeDays={handleChangeDias(index)} />
+                <RangoFechas
+                  onChangeDays={(val) =>
+                    handleChangeDias(index)({
+                      dias: val.dias,
+                      range: val.range,
+                    })
+                  }
+                  disabledDates={disabledDates}
+                />
               )}
             </div>
 
             {/* Días */}
             <div className="lg:basis-1/4 text-right">
               <Title level="h3" className="text-[#808080]">
-                {dias[index]} {dias[index] === 1 ? "Día" : "Días"}
+                {dias[index]?.dias || 0}{" "}
+                {dias[index]?.dias === 1 ? "Día" : "Días"}
               </Title>
             </div>
             <hr />
