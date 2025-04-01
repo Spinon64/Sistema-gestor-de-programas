@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Title from "../Atoms/Title";
 import CalendarProcess from "../Templates/CalendarProcess";
+import ValidateCalendar2 from "../Templates/ValidateCalendar2";
 import ValidateCalendar from "../Templates/ValidateCalendar";
 import Button from "../Atoms/Button";
 import CalendarDeploy from "../Templates/CalendarDeploy";
@@ -140,9 +141,12 @@ function Process() {
           etapas={["Desarrollo", "Revisión", "Validación"]}
           periodoId={periodoId} // Pasamos el ID del periodo
         />
-        <CalendarDeploy periodoId={periodoId} />
-        <CalendarTraining />
+
         {/* Pasamos el ID del periodo */}
+        <CalendarDeploy periodoId={periodoId} />
+
+        <CalendarTraining />
+
         {/*  Total de dias sumados */}
         <div className="flex justify-end">
           <Title level="h2" className="text-[#808080] mb-4 md:mr-[4rem]">
@@ -156,7 +160,7 @@ function Process() {
         <Title level="h1" className="text-start mb-4">
           Validar calendario
         </Title>
-        <ValidateCalendar periodoId={periodoId} />{" "}
+        <ValidateCalendar2 periodoId={periodoId} />{" "}
         {/* Pasamos el ID del periodo */}
         <Button
           text="Guardar"
