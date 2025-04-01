@@ -5,14 +5,22 @@ import { format } from "date-fns";
 import "react-date-range/dist/styles.css"; // estilos principales
 import "react-date-range/dist/theme/default.css"; // tema por defecto
 
-function SingleDatePicker({ label = "Escoger fecha", onChange }) {
+function SingleDatePicker({
+  label = "Escoger fecha",
+  onChangeDays,
+  className,
+}) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
+  useEffect(() => {
+    onChangeDays?.(1); // ✅ cuenta 1 día desde el inicio
+  }, []);
+
   const handleSelect = (date) => {
     setDate(date);
-    onChange?.(date);
+    onChangeDays?.(1);
     setOpen(false);
   };
 
@@ -36,7 +44,7 @@ function SingleDatePicker({ label = "Escoger fecha", onChange }) {
         readOnly
         value={format(date, "dd/MM/yyyy")}
         onClick={() => setOpen(!open)}
-        className="border border-gray-300 rounded-md px-4 py-3 w-full cursor-pointer h-14 bg-white"
+        className={`${className} border border-gray-300 rounded-md px-4 py-3 w-full cursor-pointer h-14 bg-white`}
       />
       {open && (
         <div className="absolute z-10 mt-2 shadow-lg">

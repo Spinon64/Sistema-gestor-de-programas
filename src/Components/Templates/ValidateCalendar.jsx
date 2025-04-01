@@ -3,7 +3,7 @@ import Title from "../Atoms/Title";
 import Input from "../Molecules/Input";
 
 function ValidateCalendar() {
-  const responsables = ["Coordinador", "R.E.D", "E.A.D"];
+  const responsables = ["Correos"];
 
   return (
     <Box

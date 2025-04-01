@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Title from "../Atoms/Title";
 import CalendarProcess from "../Templates/CalendarProcess";
-import ValidateCalendar2 from "../Templates/ValidateCalendar2";
 import ValidateCalendar from "../Templates/ValidateCalendar";
 import Button from "../Atoms/Button";
 import CalendarDeploy from "../Templates/CalendarDeploy";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import CalendarTraining from "../Templates/CalendarTraining";
+import CapacitacionPedagogica from "../Templates/CapacitacionPedagogica";
 
 function Process() {
   const [totalGeneral, setTotalGeneral] = useState(0);
@@ -17,7 +16,7 @@ function Process() {
   const [periodoActual, setPeriodoActual] = useState(null);
 
   const calcularTotal = () => {
-    const ids = ["analisis", "diseno", "desarrollo", "deploy"];
+    const ids = ["analisis", "diseno", "desarrollo", "deploy", "pedagogica"];
     const total = ids.reduce((acc, id) => {
       const item = JSON.parse(localStorage.getItem(`diasEtapas_${id}`));
       return acc + (item?.totalDias || 0);
@@ -131,6 +130,7 @@ function Process() {
           etapas={["Análisis", "Revisión", "Validación"]}
           periodoId={periodoId} // Pasamos el ID del periodo
         />
+        <CapacitacionPedagogica />
         <CalendarProcess
           id="diseno"
           etapas={["Diseño", "Revisión", "Validación"]}
@@ -145,12 +145,10 @@ function Process() {
         {/* Pasamos el ID del periodo */}
         <CalendarDeploy periodoId={periodoId} />
 
-        <CalendarTraining />
-
         {/*  Total de dias sumados */}
         <div className="flex justify-end">
           <Title level="h2" className="text-[#808080] mb-4 md:mr-[4rem]">
-            Total = {totalGeneral + 2} días
+            Total = {totalGeneral} días
           </Title>
         </div>
       </div>
@@ -160,7 +158,7 @@ function Process() {
         <Title level="h1" className="text-start mb-4">
           Validar calendario
         </Title>
-        <ValidateCalendar2 periodoId={periodoId} />{" "}
+        <ValidateCalendar periodoId={periodoId} />{" "}
         {/* Pasamos el ID del periodo */}
         <Button
           text="Guardar"

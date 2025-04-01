@@ -2,13 +2,14 @@ import Title from "../Atoms/Title";
 import Box from "../Atoms/Box";
 import RangoFechas from "../Organisms/RangoFechas";
 import { useCallback, useState, useEffect } from "react";
+import SingleDatePicker from "../Organisms/SingleDatePicker";
 
 /**
  * CalendarDeploy muestra fases específicas ("Implementación" y "Evaluación").
  * Calcula y guarda la suma total de días en localStorage y notifica cambios a Process.
  */
 function CalendarDeploy() {
-  const items = ["Implementación", "Evaluación"];
+  const items = ["Implementación", "Capacitacion Tecnologica", "Evaluación"];
   const [dias, setDias] = useState(Array(items.length).fill(0));
 
   // Manejador para cambiar los dias por cada etapa
@@ -57,7 +58,21 @@ function CalendarDeploy() {
 
             {/* Fecha */}
             <div className="lg:basis-1/2">
-              <RangoFechas onChangeDays={handleChangeDias(index)} />
+              {etapa === "Capacitacion Tecnologica" ? (
+                <div className="flex flex-col gap-3">
+                  <select className="border mt-1 border-gray-300 bg-gray-200 rounded-md px-4 focus:outline-none focus-ring-2 focus:ring-gray-400 w-[250px] h-[3rem]">
+                    <option>Presencial</option>
+                    <option>Virtual</option>
+                  </select>
+                  <SingleDatePicker
+                    onChangeDays={handleChangeDias(index)}
+                    className="!w-[250px] h-[3rem]"
+                    label=""
+                  />
+                </div>
+              ) : (
+                <RangoFechas onChangeDays={handleChangeDias(index)} />
+              )}
             </div>
 
             {/* Días */}
