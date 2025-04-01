@@ -89,6 +89,10 @@ export default function RangoFechas({ onChangeDays, initialRange = [] }) {
             moveRangeOnFirstSelection={false}
             minDate={new Date()}
             ranges={range}
+            disabledDay={(date) => {
+              const day = date.getDay();
+              return day === 0 || day === 6; // domingo o sábado
+            }}
           />
         </div>
       )}
