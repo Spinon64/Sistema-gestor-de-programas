@@ -4,7 +4,11 @@ import { format, differenceInCalendarDays } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-export default function RangoFechas({ onChangeDays, initialRange = [] }) {
+export default function RangoFechas({
+  onChangeDays,
+  className,
+  initialRange = [],
+}) {
   const [range, setRange] = useState([
     {
       startDate: initialRange[0] || new Date(),
@@ -68,6 +72,7 @@ export default function RangoFechas({ onChangeDays, initialRange = [] }) {
     <div style={{ position: "relative", display: "inline-block" }} ref={ref}>
       <input
         type="text"
+        className={className}
         readOnly
         value={`${formatOrPlaceholder(
           range[0].startDate

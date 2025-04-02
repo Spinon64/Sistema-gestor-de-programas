@@ -7,6 +7,7 @@ import "react-date-range/dist/theme/default.css"; // tema por defecto
 function SingleDatePicker({
   label = "Escoger fecha",
   onChangeDays,
+  onChangeFecha, // ✅ nuevo prop
   className,
   disabledDates = [],
 }) {
@@ -15,14 +16,15 @@ function SingleDatePicker({
   const ref = useRef(null);
 
   const handleSelect = (selectedDate) => {
-    // Verificamos si la fecha está en la lista de deshabilitadas
     const isDisabled = disabledDates.some((d) => isSameDay(d, selectedDate));
 
     if (!isDisabled) {
       setDate(selectedDate);
-      onChangeDays?.(1); // Cuenta 1 día solo si es válida
+      onChangeDays?.(1);
+      onChangeFecha?.(selectedDate); // ✅ pasamos fecha al padre
     } else {
-      onChangeDays?.(0); // Si es inválida, no se cuenta
+      onChangeDays?.(0);
+      onChangeFecha?.(null);
     }
 
     setOpen(false);

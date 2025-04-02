@@ -15,6 +15,198 @@ function Process() {
   const [maestria, setMaestria] = useState(null);
   const [periodoActual, setPeriodoActual] = useState(null);
 
+  //////////////////////
+
+  const guardarDataCalendar = () => {
+    const periodId = Number(periodoActual.id);
+    const periodName =
+      maestria.tipoPeriodos === "Unico (Diplomado)"
+        ? "Periodo"
+        : maestria.tipoPeriodos === "Semestral"
+        ? `Semestre ${
+            maestria.periodos.findIndex((p) => Number(p.id) === periodId) + 1
+          }`
+        : maestria.tipoPeriodos === "Cuatrimestral"
+        ? `Cuatrimestre ${
+            maestria.periodos.findIndex((p) => Number(p.id) === periodId) + 1
+          }`
+        : "Periodo";
+
+    const etapas = [];
+
+    // === ETAPAS NORMALES (análisis, diseño, desarrollo) ===
+    const etapasProceso = [
+      {
+        id: 1,
+        key: "analisis",
+        nombre: "Análisis",
+        actividades: ["Análisis", "Revisión", "Validación"],
+      },
+      {
+        id: 2,
+        key: "diseno",
+        nombre: "Diseño",
+        actividades: ["Diseño", "Revisión", "Validación"],
+      },
+      {
+        id: 3,
+        key: "desarrollo",
+        nombre: "Desarrollo",
+        actividades: ["Desarrollo", "Revisión", "Validación"],
+      },
+    ];
+
+    etapasProceso.forEach(({ id, key, nombre, actividades }) => {
+      const fechas =
+        JSON.parse(localStorage.getItem(`fechasEtapas_${key}`)) || [];
+      const actividadesFinales = fechas.map(([start, end], index) => {
+        const duracion =
+          start && end
+            ? (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1
+            : 0;
+        return {
+          id: index + 1,
+          nombre: actividades[index],
+          fechaInicio: start,
+          fechaFin: end,
+          duracion,
+        };
+      });
+
+      const duracionTotal = actividadesFinales.reduce(
+        (acc, a) => acc + a.duracion,
+        0
+      );
+      etapas.push({
+        id,
+        nombre,
+        duracionTotal,
+        actividades: actividadesFinales,
+      });
+    });
+
+    // === IMPLEMENTACIÓN ===
+    const fechasDeploy =
+      JSON.parse(localStorage.getItem("fechasEtapas_deploy")) || [];
+    if (fechasDeploy[0]?.[0] && fechasDeploy[0]?.[1]) {
+      const start = fechasDeploy[0][0];
+      const end = fechasDeploy[0][1];
+      const duracion =
+        (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1;
+
+      etapas.push({
+        id: 4,
+        nombre: "Implementación",
+        duracionTotal: duracion,
+        actividades: [
+          {
+            id: 10,
+            nombre: "Implementación",
+            fechaInicio: start,
+            fechaFin: end,
+            duracion,
+          },
+        ],
+      });
+    }
+
+    // === EVALUACIÓN ===
+    if (fechasDeploy[2]?.[0] && fechasDeploy[2]?.[1]) {
+      const start = fechasDeploy[2][0];
+      const end = fechasDeploy[2][1];
+      const duracion =
+        (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1;
+
+      etapas.push({
+        id: 5,
+        nombre: "Evaluación",
+        duracionTotal: duracion,
+        actividades: [
+          {
+            id: 11,
+            nombre: "Evaluación",
+            fechaInicio: start,
+            fechaFin: end,
+            duracion,
+          },
+        ],
+      });
+    }
+
+    // === CAPACITACIÓN (pedagógica y tecnológica) ===
+    const actividadesCap = [];
+    let totalCap = 0;
+
+    // Pedagógica
+    const fechasPedagogica =
+      JSON.parse(localStorage.getItem("fechasEtapas_pedagogica")) || [];
+    const modalidadPedagogica =
+      JSON.parse(localStorage.getItem("modalidadEtapas_pedagogica")) ||
+      "Virtual";
+    if (fechasPedagogica?.[0]) {
+      actividadesCap.push({
+        id: 12,
+        nombre: "Capacitación Pedagógica",
+        fechaInicio: fechasPedagogica[0],
+        fechaFin: fechasPedagogica[1] || fechasPedagogica[0],
+        duracion: 1,
+        modalidad: modalidadPedagogica,
+      });
+      totalCap += 1;
+    }
+
+    // Tecnológica (deploy[1])
+    if (fechasDeploy[1]?.[0]) {
+      const start = fechasDeploy[1][0];
+      const end = fechasDeploy[1][1] || fechasDeploy[1][0];
+      const duracion =
+        start && end
+          ? (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1
+          : 1;
+
+      const modalidadTecnologica =
+        JSON.parse(localStorage.getItem("modalidadEtapas_tecnologica")) ||
+        "Presencial";
+
+      actividadesCap.push({
+        id: 13,
+        nombre: "Capacitación Tecnológica",
+        fechaInicio: start,
+        fechaFin: end,
+        duracion,
+        modalidad: modalidadTecnologica,
+      });
+
+      totalCap += duracion;
+    }
+
+    if (actividadesCap.length > 0) {
+      etapas.push({
+        id: 6,
+        nombre: "Capacitación",
+        duracionTotal: totalCap,
+        actividades: actividadesCap,
+      });
+    }
+
+    // === TOTAL FINAL ===
+    const duracionTotal = etapas.reduce(
+      (acc, etapa) => acc + etapa.duracionTotal,
+      0
+    );
+
+    const dataCalendar = {
+      id: periodId,
+      periodo: periodName,
+      duracionTotal,
+      etapas,
+    };
+
+    localStorage.setItem("dataCalendar", JSON.stringify(dataCalendar));
+    console.log("✅ dataCalendar actualizado correctamente:", dataCalendar);
+  };
+  /////////////////////
+
   const getFechasOcupadas = () => {
     const ids = ["analisis", "diseno", "desarrollo", "deploy"];
     const fechas = [];
@@ -44,10 +236,19 @@ function Process() {
 
   const calcularTotal = () => {
     const ids = ["analisis", "diseno", "desarrollo", "deploy", "pedagogica"];
-    const total = ids.reduce((acc, id) => {
+    let total = ids.reduce((acc, id) => {
       const item = JSON.parse(localStorage.getItem(`diasEtapas_${id}`));
       return acc + (item?.totalDias || 0);
     }, 0);
+
+    // 🧠 Extra: sumar duración si existe en `fechasEtapas_deploy[1]`
+    const fechasTec = JSON.parse(
+      localStorage.getItem("fechasEtapas_deploy")
+    )?.[1];
+    if (fechasTec?.[0]) {
+      total;
+    }
+
     setTotalGeneral(total);
   };
 
@@ -191,6 +392,7 @@ function Process() {
         <Button
           text="Guardar"
           className="h-[2.5rem] w-full sm:w-1/2 lg:w-[20rem] mb-8 "
+          onClick={guardarDataCalendar}
         />
       </div>
     </div>

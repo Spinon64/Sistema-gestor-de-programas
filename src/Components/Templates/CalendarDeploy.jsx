@@ -11,6 +11,8 @@ import SingleDatePicker from "../Organisms/SingleDatePicker";
 function CalendarDeploy({ disabledDates = [] }) {
   const items = ["Implementación", "Capacitacion Tecnologica", "Evaluación"];
   const [dias, setDias] = useState(Array(items.length).fill({ dias: 0 }));
+  const [modalidadTec, setModalidadTec] = useState("Presencial");
+  const [fechaTec, setFechaTec] = useState(null); // Nueva: fecha única
 
   const handleChangeDias = useCallback(
     (index) => (value) => {
@@ -35,9 +37,15 @@ function CalendarDeploy({ disabledDates = [] }) {
     const fechasPorEtapa = dias.map((etapa) => etapa.range || []);
     localStorage.setItem("fechasEtapas_deploy", JSON.stringify(fechasPorEtapa));
 
+    // ✅ Guardar modalidad de capacitación tecnológica
+    localStorage.setItem(
+      "modalidadEtapas_tecnologica",
+      JSON.stringify(modalidadTec)
+    );
+
     // Notificar actualización
     window.dispatchEvent(new Event("actualizarTotal"));
-  }, [dias, total]);
+  }, [dias, total, modalidadTec]);
 
   return (
     <Box
@@ -61,14 +69,32 @@ function CalendarDeploy({ disabledDates = [] }) {
             {/* Fecha */}
             <div className="lg:basis-1/2">
               {etapa === "Capacitacion Tecnologica" ? (
-                <div className="flex flex-col gap-3">
-                  <select className="border mt-1 border-gray-300 bg-gray-200 rounded-md px-4 focus:outline-none focus-ring-2 focus:ring-gray-400 w-[250px] h-[3rem]">
+                <div className="flex  gap-3">
+                  <select
+                    className="border mt-1 border-gray-300 bg-gray-200 rounded-md px-4 focus:outline-none focus-ring-2 focus:ring-gray-400 w-[150px] h-[3rem]"
+                    value={modalidadTec}
+                    onChange={(e) => setModalidadTec(e.target.value)}
+                  >
                     <option>Presencial</option>
                     <option>Virtual</option>
                   </select>
                   <SingleDatePicker
-                    onChangeDays={(dias) => handleChangeDias(index)({ dias })}
-                    className="!w-[250px] h-[3rem]"
+                    onChangeDays={(dias) =>
+                      handleChangeDias(index)({
+                        dias,
+                        range: [fechaTec, fechaTec], // Guardamos como rango válido
+                      })
+                    }
+                    onChangeFecha={(fecha) => {
+                      setFechaTec(fecha); // Guardamos fecha seleccionada
+                      if (fecha) {
+                        handleChangeDias(index)({
+                          dias: 1,
+                          range: [fecha, fecha],
+                        });
+                      }
+                    }}
+                    className="!w-[180px] h-[3rem]"
                     label=""
                     disabledDates={disabledDates}
                   />
@@ -82,6 +108,7 @@ function CalendarDeploy({ disabledDates = [] }) {
                     })
                   }
                   disabledDates={disabledDates}
+                  className="!w-[320px]"
                 />
               )}
             </div>

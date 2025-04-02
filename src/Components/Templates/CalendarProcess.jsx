@@ -48,8 +48,12 @@ function CalendarProcess({
       id,
       totalDias: total,
     };
+
     localStorage.setItem(`diasEtapas_${id}`, JSON.stringify(totalDiasEtapas));
     window.dispatchEvent(new Event("actualizarTotal"));
+
+    console.log(totalDiasEtapas);
+    console.log(fechasPorEtapa);
   }, [total, id, dias, etapas]);
 
   return (
@@ -85,7 +89,7 @@ function CalendarProcess({
                 </Title>
               </div>
             </div>
-            <hr className="border-t border-gray-400 mt-1" />
+            <hr className="border-t border-gray-400 mt-2" />
           </div>
         ))}
       </div>

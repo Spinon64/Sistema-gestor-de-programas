@@ -5,17 +5,27 @@ import SingleDatePicker from "../Organisms/SingleDatePicker";
 
 function CapacitacionPedagogica({ disabledDates = [] }) {
   const [dias, setDias] = useState(0);
+  const [fecha, setFecha] = useState(null);
+  const [modalidad, setModalidad] = useState("Presencial");
 
-  // Guardar en localStorage cuando cambia `dias`
   useEffect(() => {
+    // Guardar la fecha seleccionada como un array [fecha] para mantener consistencia
+    if (fecha) {
+      localStorage.setItem("fechasEtapas_pedagogica", JSON.stringify([fecha]));
+    }
+
     localStorage.setItem(
       "diasEtapas_pedagogica",
       JSON.stringify({ totalDias: dias })
     );
 
-    // Notificar a Process que actualice el total
+    localStorage.setItem(
+      "modalidadEtapas_pedagogica",
+      JSON.stringify(modalidad)
+    );
+
     window.dispatchEvent(new Event("actualizarTotal"));
-  }, [dias]);
+  }, [dias, fecha, modalidad]);
 
   return (
     <Box
@@ -34,7 +44,11 @@ function CapacitacionPedagogica({ disabledDates = [] }) {
 
           {/* Modalidad */}
           <div className="lg:basis-1/4 w-[250px] lg:w-full mr-3">
-            <select className="border border-gray-300 bg-gray-200 rounded-md px-4 focus:outline-none focus:ring-2 focus:ring-gray-400 w-full h-14">
+            <select
+              className="border border-gray-300 bg-gray-200 rounded-md px-4 focus:outline-none focus:ring-2 focus:ring-gray-400 w-full h-14"
+              value={modalidad}
+              onChange={(e) => setModalidad(e.target.value)}
+            >
               <option>Presencial</option>
               <option>Virtual</option>
             </select>
@@ -45,6 +59,7 @@ function CapacitacionPedagogica({ disabledDates = [] }) {
             <SingleDatePicker
               label=""
               onChangeDays={(value) => setDias(value)}
+              onChangeFecha={(date) => setFecha(date)} // ✅ recibir fecha
               disabledDates={disabledDates}
             />
           </div>
