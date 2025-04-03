@@ -7,10 +7,26 @@ const FileUploadButton = ({ label, onFileSelect }) => {
   // Manejar el cambio de archivo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setSelectedFile(file);
-    if (onFileSelect) {
-      onFileSelect(file); // Llamar al callback cuando se selecciona un archivo
-    }
+
+    // Usar FileReader para convertir el archivo a Base64
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      // Una vez que el archivo se haya leído, guardamos el archivo con su nombre, tipo y contenido en Base64
+      const fileData = {
+        name: file.name,
+        type: file.type,
+        data: reader.result, // Archivo en formato Base64
+      };
+
+      setSelectedFile(fileData); // Guardar el archivo convertido en Base64 en el estado
+
+      if (onFileSelect) {
+        onFileSelect(fileData); // Llamar al callback, si existe
+      }
+    };
+
+    reader.readAsDataURL(file); // Convertir el archivo a Base64
   };
 
   return (

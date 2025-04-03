@@ -57,12 +57,11 @@ const CrearMaestria = () => {
       tipoProgramas,
       tipoNivel,
       tipoDependencia,
+      selectedFile,
     };
 
     localStorage.setItem("maestria", JSON.stringify(maestriaData));
-    if (selectedFile) {
-      localStorage.setItem("uploadedFile", selectedFile.name);
-    }
+
     navigate("/gestion-programa");
   };
 
