@@ -1,43 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../Molecules/Card.jsx";
 import SearchInput from "../Atoms/SearchInput.jsx";
-import { fetchPrograms } from "../../../public/api/fakeAPI.js";
 import Button from "../Atoms/Button.jsx";
 import Title from "../Atoms/Title.jsx";
 import { Link } from "react-router-dom";
+import { getBin } from "../../services/jsonBinConfig.js";
 
 const Programs = () => {
   const [maestrias, setMaestrias] = useState([]);
   const [diplomados, setDiplomados] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // Una sola búsqueda para todo
+  const [searchTerm, setSearchTerm] = useState("");
+  const [datos, setDatos] = useState(null);
 
+  // Obtener datos de programas ya creados
   useEffect(() => {
-    const loadPrograms = async () => {
-      const data = await fetchPrograms();
-      setMaestrias(data.maestrias);
-      setDiplomados(data.diplomados);
+    const fetchData = async () => {
+      try {
+        const data = await getBin(import.meta.env.VITE_PROGRAM_DATA);
+        setDatos(data);
+      } catch (error) {
+        console.error("Error al obtener datos de JSONBin:", error);
+      }
     };
 
-    loadPrograms();
+    fetchData();
   }, []);
 
-  // 🔍 Filtrar tanto maestrías como diplomados con un solo input
+  useEffect(() => {
+    if (!datos) return;
+
+    const programas = datos.programas || [];
+
+    const maestriasFiltradas = programas.filter(
+      (p) => p.tipoProgramas.toLowerCase() === "maestría"
+    );
+
+    const diplomadosFiltrados = programas.filter(
+      (p) => p.tipoProgramas.toLowerCase() === "diplomado"
+    );
+
+    setMaestrias(maestriasFiltradas);
+    setDiplomados(diplomadosFiltrados);
+  }, [datos]);
   const filteredPrograms = (programs) =>
     programs.filter((program) =>
-      program.title.toLowerCase().includes(searchTerm.toLowerCase())
+      program.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
   return (
-    <main>
-      <div className="mb-5 mx-12">
-        {/* Barra de búsqueda en la parte superior */}
-        <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row justify-between mb-6">
-          <Title level="h1" className="mt-5 text-center md:text-left">
+    <main className="px-4 md:px-12">
+      <div className="mb-5">
+        {/* Encabezado y barra de búsqueda */}
+        <div className="flex flex-col md:flex-row justify-between mb-6">
+          <Title level="h1" className="mt-5  md:text-left">
             Programas Académicos
           </Title>
-          <div className="flex flex-col items-start lg:flex-row gap-3 mt-6 w-max">
+          <div className="flex flex-col items-start md:flex-row gap-3 mt-6">
             <Link to="/crear-programa">
-              <Button className="text-sm font-thin" text="+ Crear Programa" />
+              <Button
+                className="!text-xs md:text-sm h-[2.5rem] font-thin"
+                text="Crear Programa"
+              />
             </Link>
 
             <SearchInput
@@ -53,15 +76,14 @@ const Programs = () => {
           <Title level="h2" className="mb-4 underline underline-offset-4">
             Maestrías
           </Title>
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-7"> */}
-          <div className="mt-6 mx-2 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+          <div className="mt-6 md:mx-5 grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] items-stretch ">
             {filteredPrograms(maestrias).length > 0 ? (
               filteredPrograms(maestrias).map((program) => (
                 <Card
                   key={program.id}
-                  title={program.title}
-                  faculty={program.faculty}
-                  model={program.model}
+                  title={program.nombre}
+                  faculty={program.tipoDependencia}
+                  model={program.tipoPeriodos}
                 />
               ))
             ) : (
@@ -75,14 +97,14 @@ const Programs = () => {
           <Title level="h2" className="mb-4 underline underline-offset-4">
             Diplomados
           </Title>
-          <div className="mt-6 mx-2 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+          <div className="mt-6 md:mx-5 grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] items-stretch ">
             {filteredPrograms(diplomados).length > 0 ? (
               filteredPrograms(diplomados).map((program) => (
                 <Card
                   key={program.id}
-                  title={program.title}
-                  faculty={program.faculty}
-                  model={program.model}
+                  title={program.nombre}
+                  faculty={program.tipoDependencia}
+                  model={program.tipoPeriodos}
                 />
               ))
             ) : (

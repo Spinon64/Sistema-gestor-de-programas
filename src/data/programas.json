@@ -1,0 +1,68 @@
+{
+  "programas": [
+    {
+      "id": 1712250234032,
+      "nombre": "Maestría en Educación Digital",
+      "numPeriodos": 3,
+      "tipoPeriodos": "Semestral",
+      "periodos": [
+        {
+          "id": 1712250234032.123,
+          "materias": [
+            {
+              "id": 1712250234032.456,
+              "nombre": "",
+              "profesores": []
+            }
+          ]
+        },
+        {
+          "id": 1712250235032.789,
+          "materias": [
+            {
+              "id": 1712250235032.321,
+              "nombre": "",
+              "profesores": []
+            }
+          ]
+        },
+        {
+          "id": 1712250236032.654,
+          "materias": [
+            {
+              "id": 1712250236032.987,
+              "nombre": "",
+              "profesores": []
+            }
+          ]
+        }
+      ],
+      "tipoProgramas": "Maestría",
+      "tipoNivel": "Posgrado",
+      "tipoDependencia": "Facultad de Educación",
+      "selectedFile": "plan_estudios.pdf"
+    },
+    {
+      "id": 17122502337849,
+      "nombre": "Diplomado en Big Data",
+      "numPeriodos": 1,
+      "tipoPeriodos": "Unico (Diplomado)",
+      "periodos": [
+        {
+          "id": 1712250234032.123,
+          "materias": [
+            {
+              "id": 1712250234032.456,
+              "nombre": "",
+              "profesores": []
+            }
+          ]
+        }
+      ],
+      "tipoProgramas": "Diplomado",
+      "tipoNivel": "Posgrado",
+      "tipoDependencia": "Facultad de Educación",
+      "selectedFile": "plan_estudios2.pdf"
+    }
+  ]
+}

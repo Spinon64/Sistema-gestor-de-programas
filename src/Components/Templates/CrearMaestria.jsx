@@ -7,7 +7,6 @@ import Ejemplo from "../../assets/ejemplo.jpg";
 import FileUploadButton from "../Atoms/FileUploadButton";
 import Input from "../Molecules/Input";
 import Select from "../Molecules/Select";
-import data from "../../data/programs.json";
 
 const CrearMaestria = () => {
   const [nombre, setNombre] = useState("");
@@ -50,7 +49,7 @@ const CrearMaestria = () => {
             {
               id: Date.now() + Math.random(), // Agregamos un ID único a la materia
               nombre: "",
-              profesores: [""],
+              profesores: [],
             },
           ], // Cambiado de array vacío a objeto con materias
         })),
@@ -89,7 +88,7 @@ const CrearMaestria = () => {
             {/* Select Para Tipo Programa */}
             <Select
               label="Tipo de Programa"
-              options={data.opciones.tipoPrograma}
+              options={["Maestría", "Diplomado"]}
               value={tipoProgramas}
               onChange={handleTipoPrograma}
             />
@@ -97,7 +96,7 @@ const CrearMaestria = () => {
             {/* Div para Tipo Periodos */}
             <Select
               label="Tipo de Periodo"
-              options={data.opciones.modelo}
+              options={["Semestral", "Cuatrimestral", "Unico (Diplomado)"]}
               value={tipoPeriodos}
               disabled={tipoProgramas === "Diplomado"}
               onChange={(e) => setTipoPeriodos(e.target.value)}
@@ -125,14 +124,24 @@ const CrearMaestria = () => {
             {/* Select Para Nivel */}
             <Select
               label="Nivel"
-              options={data.opciones.nivel}
+              options={[
+                "Media superior",
+                "Superior",
+                "Posgrado",
+                "Educación continua",
+                "Extensión universitaria previsión asistencial",
+              ]}
               value={tipoNivel}
               onChange={(e) => setTipoNivel(e.target.value)}
             />
             {/* Div para Facultad o Dependencia */}
             <Select
               label="Facultad o Dependencia"
-              options={data.opciones.facultades}
+              options={[
+                "Facultad Telemática",
+                "Facultad de Medicina",
+                "Facultad de Ciencias",
+              ]}
               value={tipoDependencia}
               onChange={(e) => setTipoDependencia(e.target.value)}
             />
