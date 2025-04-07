@@ -5,19 +5,32 @@ import Title from "../Atoms/Title";
 import Button from "../Atoms/Button";
 import Input from "../Molecules/Input";
 import DeleteIcon from "../Atoms/DeleteIcon";
+import { getBin } from "../../services/jsonBinConfig";
+import { useLocation } from "react-router-dom"; // para recibir ID desde navegación
 
 const GestionMaestria = () => {
   const [maestria, setMaestria] = useState(null);
   const [isEditing, setIsEditing] = useState(true);
+  const location = useLocation();
+  const programaId = location.state?.programaId;
 
-  // UseEffect para obtener los datos de localStorage
   useEffect(() => {
-    const savedMaestria = localStorage.getItem("maestria");
+    const cargarDatos = async () => {
+      const data = await getBin();
+      const encontrados = data?.programas || [];
 
-    if (savedMaestria) {
-      setMaestria(JSON.parse(savedMaestria));
+      const programa = encontrados.find((p) => p.id === programaId);
+      if (programa) {
+        setMaestria(programa);
+      } else {
+        console.error("Programa no encontrado.");
+      }
+    };
+
+    if (programaId) {
+      cargarDatos();
     }
-  }, []);
+  }, [programaId]);
 
   // Handle para establecer si se está editando o no
   const hanldeIsEditing = (e) => {

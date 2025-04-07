@@ -76,7 +76,7 @@ const Programs = () => {
           <Title level="h2" className="mb-4 underline underline-offset-4">
             Maestrías
           </Title>
-          <div className="mt-6 md:mx-5 grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] items-stretch ">
+          <div className="mt-6 gap-8 md:mx-5 grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] items-stretch ">
             {filteredPrograms(maestrias).length > 0 ? (
               filteredPrograms(maestrias).map((program) => (
                 <Card
@@ -97,7 +97,7 @@ const Programs = () => {
           <Title level="h2" className="mb-4 underline underline-offset-4">
             Diplomados
           </Title>
-          <div className="mt-6 md:mx-5 grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] items-stretch ">
+          <div className="mt-6 gap-8 md:mx-5 grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] items-stretch ">
             {filteredPrograms(diplomados).length > 0 ? (
               filteredPrograms(diplomados).map((program) => (
                 <Card

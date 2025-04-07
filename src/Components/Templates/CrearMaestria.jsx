@@ -1,4 +1,3 @@
-// src/components/CrearMaestria.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Cambiado a useNavigate
 import Title from "../Atoms/Title";
@@ -7,6 +6,7 @@ import Ejemplo from "../../assets/ejemplo.jpg";
 import FileUploadButton from "../Atoms/FileUploadButton";
 import Input from "../Molecules/Input";
 import Select from "../Molecules/Select";
+import { updateBin, getBin } from "../../services/jsonBinConfig"; // Asegúrate de importar
 
 const CrearMaestria = () => {
   const [nombre, setNombre] = useState("");
@@ -16,6 +16,8 @@ const CrearMaestria = () => {
   const [tipoNivel, setTipoNivel] = useState("superior");
   const [tipoDependencia, setTipoDependencia] = useState("teleamatica");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Added missing state
+  const [error, setError] = useState(null); // Added missing state
 
   const navigate = useNavigate(); // Usar useNavigate para la navegación
 
@@ -34,34 +36,77 @@ const CrearMaestria = () => {
     setSelectedFile(file);
   };
 
-  const handleSubmit = () => {
-    const maestriaData = {
-      id: Date.now(), // Usamos el timestamp actual como ID único
-      nombre,
-      numPeriodos: parseInt(numPeriodos),
-      tipoPeriodos,
-      // Crear periodos con IDs únicos
-      periodos: Array(parseInt(numPeriodos))
-        .fill()
-        .map(() => ({
-          id: Date.now() + Math.random(), // Genera un ID único para cada periodo
-          materias: [
-            {
-              id: Date.now() + Math.random(), // Agregamos un ID único a la materia
-              nombre: "",
-              profesores: [],
-            },
-          ], // Cambiado de array vacío a objeto con materias
-        })),
-      tipoProgramas,
-      tipoNivel,
-      tipoDependencia,
-      selectedFile,
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
-    localStorage.setItem("maestria", JSON.stringify(maestriaData));
+    try {
+      // Crear un objeto simple y seguro para JSON
+      const nuevoPrograma = {
+        id: Date.now(),
+        nombre: nombre || "Programa sin nombre",
+        numPeriodos: parseInt(numPeriodos) || 1,
+        tipoPeriodos,
+        periodos: Array(parseInt(numPeriodos) || 1)
+          .fill()
+          .map((_, index) => ({
+            id: Date.now() + index + 1,
+            materias: [
+              {
+                id: Date.now() + 1000 + index,
+                nombre: "",
+                profesores: [],
+              },
+            ],
+          })),
+        tipoProgramas,
+        tipoNivel,
+        tipoDependencia,
+        // No guardar el objeto File, solo metadata
+        archivoNombre: selectedFile ? selectedFile.name : null,
+      };
 
-    navigate("/gestion-programa");
+      // Verificar que el objeto puede ser convertido a JSON sin problemas
+      try {
+        JSON.stringify(nuevoPrograma);
+      } catch (jsonError) {
+        throw new Error(
+          "El objeto del programa contiene datos que no pueden ser guardados en formato JSON. Error: " +
+            jsonError.message
+        );
+      }
+
+      console.log("🔍 Obteniendo datos actuales...");
+      const bin = await getBin();
+
+      if (bin === null) {
+        console.log(
+          "⚠️ No se obtuvieron datos del bin, creando una nueva estructura"
+        );
+        // Si getBin devuelve null, crea una estructura inicial
+        await updateBin({ programas: [nuevoPrograma] });
+      } else {
+        const programasActuales = bin?.programas || [];
+        console.log(`📋 Programas existentes: ${programasActuales.length}`);
+
+        const nuevosProgramas = [...programasActuales, nuevoPrograma];
+        await updateBin({ programas: nuevosProgramas });
+      }
+
+      console.log("✅ Programa guardado con éxito");
+      alert("Programa creado correctamente");
+
+      navigate("/gestion-programa", {
+        state: { programaId: nuevoPrograma.id },
+      });
+    } catch (error) {
+      console.error("❌ Error al guardar programa:", error);
+      setError(`Error: ${error.message || "Problema al guardar el programa"}`);
+      alert(`Error: ${error.message || "No se pudo guardar el programa"}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,6 +115,11 @@ const CrearMaestria = () => {
         <Title level="h1" className="mt-5 mb-10 self-start">
           Crear nuevo programa
         </Title>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
         <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start max-w-7xl">
           <form
             onSubmit={handleSubmit}
@@ -153,8 +203,9 @@ const CrearMaestria = () => {
               text="Crear Programa"
               type="submit"
               className="h-12 lg:mt-9 w-full"
+              disabled={isLoading}
             >
-              Crear Maestría
+              {isLoading ? "Guardando..." : "Crear Maestría"}
             </Button>
           </form>
           <div className="hidden md:flex justify-center h-[800px] lg:h-[500px] w-auto">
