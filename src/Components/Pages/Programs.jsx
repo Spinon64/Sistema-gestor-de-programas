@@ -84,6 +84,7 @@ const Programs = () => {
                   title={program.nombre}
                   faculty={program.tipoDependencia}
                   model={program.tipoPeriodos}
+                  to={`/detalles-programa/${program.id}`}
                 />
               ))
             ) : (
@@ -105,6 +106,7 @@ const Programs = () => {
                   title={program.nombre}
                   faculty={program.tipoDependencia}
                   model={program.tipoPeriodos}
+                  to={`/detalles-programa/${program.id}`}
                 />
               ))
             ) : (

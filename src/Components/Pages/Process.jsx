@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Title from "../Atoms/Title";
 import CalendarProcess from "../Templates/CalendarProcess";
 import ValidateCalendar from "../Templates/ValidateCalendar";
@@ -15,6 +15,7 @@ function Process() {
   const [maestria, setMaestria] = useState(null);
   const [periodoActual, setPeriodoActual] = useState(null);
   const [totalGeneral, setTotalGeneral] = useState(0);
+  const navigate = useNavigate();
 
   const guardarDataCalendar = async () => {
     const periodId = Number(periodoActual.id);
@@ -194,6 +195,7 @@ function Process() {
     try {
       await updateCalendarBin(dataCalendar);
       console.log("✅ Calendario guardado correctamente en JSONBin");
+
       ["analisis", "diseno", "desarrollo", "deploy", "pedagogica"].forEach(
         (key) => {
           localStorage.removeItem(`fechasEtapas_${key}`);
@@ -201,6 +203,9 @@ function Process() {
           localStorage.removeItem(`diasEtapas_${key}`);
         }
       );
+
+      // Redirección automática
+      navigate(`/detalles-programa/${id}`);
     } catch (error) {
       alert("Error al guardar el calendario. Intenta de nuevo.");
       console.error(error);
