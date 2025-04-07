@@ -1,31 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import CalendarIcon from "../Atoms/CalendarIcon";
 import Title from "../Atoms/Title";
 import DotIcon from "../Atoms/DotIcon";
 import Button from "../Atoms/Button";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
+import { getBin } from "../../services/jsonBinConfig";
 
 const DetallesMaestria = () => {
   const { id } = useParams();
   const [maestria, setMaestria] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Cargar los datos de la maestría desde localStorage
-    const savedMaestria = localStorage.getItem("maestria");
-    const maestriaData = savedMaestria ? JSON.parse(savedMaestria) : null;
+    const cargarDatos = async () => {
+      setLoading(true);
+      try {
+        const data = await getBin();
+        if (!data || !data.programas) {
+          console.error("No se encontraron datos o formato incorrecto");
+          return;
+        }
 
-    console.log(maestriaData);
+        const programa = data.programas.find((p) => p.id === parseInt(id));
+        if (programa) {
+          setMaestria(programa);
+        } else {
+          console.error("Programa no encontrado con ID:", id);
+        }
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (maestriaData && maestriaData.id === parseInt(id)) {
-      setMaestria(maestriaData);
-    } else {
-      console.error("Maestría no encontrada.");
-    }
+    cargarDatos();
   }, [id]);
 
-  if (!maestria) return <div>Cargando...</div>;
+  const handleEditarPrograma = (periodoId) => {
+    navigate("/gestion-programa", {
+      state: { programaId: parseInt(id), periodoId },
+    });
+  };
+
+  if (loading) return <div>Cargando datos...</div>;
+  if (!maestria) return <div>Programa no encontrado</div>;
 
   return (
     <div className="p-4 md:mx-10">
@@ -47,7 +69,6 @@ const DetallesMaestria = () => {
         Periodos
       </Title>
 
-      {/* <div className="mt-6 mx-5 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] max-w-[34rem] items-stretch gap-8"> */}
       <div className="mt-6 mx-5 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] items-stretch gap-8">
         {maestria.periodos.map((periodo, index) => (
           <div
@@ -93,7 +114,6 @@ const DetallesMaestria = () => {
                           <td>
                             <ul className="list-disc pl-4">
                               {materia.profesores.map((profesor, i) => (
-                                // <li key={i} className="capitalize"> No se ocupa capitalizar bro
                                 <li key={i}>{profesor}</li>
                               ))}
                             </ul>
@@ -114,14 +134,13 @@ const DetallesMaestria = () => {
               </table>
             </div>
             {/* Botón */}
-            <Link to="/gestion-programa">
-              <div className="mt-auto ">
-                <Button
-                  text="Editar semestre"
-                  className="w-full h-[2.5rem] p-2 "
-                />
-              </div>
-            </Link>
+            <div className="mt-auto">
+              <Button
+                text="Editar semestre"
+                className="w-full h-[2.5rem] p-2"
+                onClick={() => handleEditarPrograma(periodo.id)}
+              />
+            </div>
           </div>
         ))}
       </div>

@@ -1,29 +1,40 @@
-// src/components/GestionMaestria.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Title from "../Atoms/Title";
 import Button from "../Atoms/Button";
 import Input from "../Molecules/Input";
 import DeleteIcon from "../Atoms/DeleteIcon";
-import { getBin } from "../../services/jsonBinConfig";
-import { useLocation } from "react-router-dom"; // para recibir ID desde navegación
+import { getBin, updateBin } from "../../services/jsonBinConfig";
+import { useLocation } from "react-router-dom";
 
 const GestionMaestria = () => {
   const [maestria, setMaestria] = useState(null);
   const [isEditing, setIsEditing] = useState(true);
+  const [allData, setAllData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const location = useLocation();
+  // const navigate = useNavigate();
   const programaId = location.state?.programaId;
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const data = await getBin();
-      const encontrados = data?.programas || [];
+      setLoading(true);
+      try {
+        const data = await getBin();
+        setAllData(data);
+        const encontrados = data?.programas || [];
 
-      const programa = encontrados.find((p) => p.id === programaId);
-      if (programa) {
-        setMaestria(programa);
-      } else {
-        console.error("Programa no encontrado.");
+        const programa = encontrados.find((p) => p.id === programaId);
+        if (programa) {
+          setMaestria(programa);
+        } else {
+          console.error("Programa no encontrado.");
+        }
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -33,12 +44,13 @@ const GestionMaestria = () => {
   }, [programaId]);
 
   // Handle para establecer si se está editando o no
-  const hanldeIsEditing = (e) => {
+  const hanldeIsEditing = async (e) => {
+    e.preventDefault();
+
     const esEmailValido = (email) => {
       const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regexEmail.test(email);
     };
-    e.preventDefault();
 
     if (isEditing) {
       const camposInvalidos = maestria.periodos.some((periodo) =>
@@ -57,34 +69,53 @@ const GestionMaestria = () => {
         );
         return;
       }
+
+      // Guardar en JSONBin
+      try {
+        setSaving(true);
+        // Actualizar el programa en el array de programas
+        const updatedProgramas = allData.programas.map((p) =>
+          p.id === maestria.id ? maestria : p
+        );
+
+        const updatedData = {
+          ...allData,
+          programas: updatedProgramas,
+        };
+
+        await updateBin(updatedData);
+        alert("Datos guardados correctamente");
+        setAllData(updatedData);
+      } catch (error) {
+        console.error("Error al guardar datos:", error);
+        alert("Error al guardar los datos. Inténtalo de nuevo.");
+        return;
+      } finally {
+        setSaving(false);
+      }
     }
 
     setIsEditing((prev) => !prev);
   };
 
   // Handle para agregar una asignatura
-  // Recibe el ID del periodo para saber a cual agregar la materia
   const handleAddAsignatura = (periodoId) => {
     const newMateria = {
-      id: Date.now(), // Agregamos un ID único a la materia
+      id: Date.now(),
       nombre: "",
       profesores: [""],
     };
     const updatedMaestria = { ...maestria };
 
-    // Encuentra el índice del periodo con el ID correspondiente
     const periodoIndex = updatedMaestria.periodos.findIndex(
       (periodo) => periodo.id === periodoId
     );
 
     if (periodoIndex !== -1) {
-      // Agrega la nueva materia al periodo encontrado
       if (!updatedMaestria.periodos[periodoIndex].materias) {
         updatedMaestria.periodos[periodoIndex].materias = [];
       }
       updatedMaestria.periodos[periodoIndex].materias.push(newMateria);
-
-      localStorage.setItem("maestria", JSON.stringify(updatedMaestria));
       setMaestria(updatedMaestria);
     }
   };
@@ -106,7 +137,6 @@ const GestionMaestria = () => {
           materiaIndex
         ].profesores.splice(profesorIndex, 1);
 
-        localStorage.setItem("maestria", JSON.stringify(updateMaestria));
         setMaestria(updateMaestria);
       }
     }
@@ -125,10 +155,10 @@ const GestionMaestria = () => {
           (materia) => materia.id !== materiaId
         );
 
-      localStorage.setItem("maestria", JSON.stringify(updatedMaestria));
       setMaestria(updatedMaestria);
     }
   };
+
   // Handle para agregar un profesor
   const handleAddProfesor = (periodoId, materiaId) => {
     const updatedMaestria = { ...maestria };
@@ -146,7 +176,6 @@ const GestionMaestria = () => {
           materiaIndex
         ].profesores.push("");
 
-        localStorage.setItem("maestria", JSON.stringify(updatedMaestria));
         setMaestria(updatedMaestria);
       }
     }
@@ -168,13 +197,13 @@ const GestionMaestria = () => {
         updatedMaestria.periodos[periodoIndex].materias[materiaIndex][field] =
           value;
 
-        localStorage.setItem("maestria", JSON.stringify(updatedMaestria));
         setMaestria(updatedMaestria);
       }
     }
   };
 
-  if (!maestria) return <div>Cargando...</div>;
+  if (loading) return <div>Cargando datos...</div>;
+  if (!maestria) return <div>Programa no encontrado</div>;
 
   return (
     <form id="form-asignaturas" className="p-4 max-w-9xl mx-10">
@@ -186,8 +215,9 @@ const GestionMaestria = () => {
           <Button
             className="mt-6 bg-[#474c5b] text-white min-w-[10rem] h-[2.5rem] content-center rounded-lg w-auto text-center"
             onClick={hanldeIsEditing}
-            text={isEditing ? "Guardar" : "Editar"}
+            text={isEditing ? (saving ? "Guardando..." : "Guardar") : "Editar"}
             form="form-asignaturas"
+            disabled={saving}
           ></Button>
           {!isEditing && (
             <Link to={`/detalles-programa/${maestria.id}`}>
@@ -252,6 +282,7 @@ const GestionMaestria = () => {
                     className={`p-2 border border-gray-300 rounded w-full ${
                       !isEditing ? "bg-gray-200 cursor-not-allowed" : ""
                     }`}
+                    disabled={!isEditing}
                     placeHolder="Nombre de la asingatura"
                   />
                   <hr className="my-4" />
@@ -280,11 +311,11 @@ const GestionMaestria = () => {
                           className={`p-2 border border-gray-300 rounded w-full ${
                             !isEditing ? "bg-gray-200 cursor-not-allowed" : ""
                           }`}
+                          disabled={!isEditing}
                           placeHolder="Correo del facilitador"
                         />
                       </div>
 
-                      {/* Si el array de profesores es mayor o igual a 2 se muestra el boton de eliminar facilitador */}
                       {isEditing && materia.profesores.length >= 2 ? (
                         <button
                           onClick={() =>
@@ -314,7 +345,6 @@ const GestionMaestria = () => {
                   )}
                 </div>
               ))}
-            {/* Si el array de materias es mayor a 4 ya no se mostrara la opcion para agregar otra */}
             {isEditing && periodo.materias.length <= 3 ? (
               <div
                 onClick={() => handleAddAsignatura(periodo.id)}
