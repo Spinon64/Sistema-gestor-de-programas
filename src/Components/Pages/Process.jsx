@@ -8,16 +8,15 @@ import CalendarDeploy from "../Templates/CalendarDeploy";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import CapacitacionPedagogica from "../Templates/CapacitacionPedagogica";
+import { updateCalendarBin, getBin } from "../../services/jsonBinConfig";
 
 function Process() {
-  const [totalGeneral, setTotalGeneral] = useState(0);
   const { id, periodoId } = useParams();
   const [maestria, setMaestria] = useState(null);
   const [periodoActual, setPeriodoActual] = useState(null);
+  const [totalGeneral, setTotalGeneral] = useState(0);
 
-  //////////////////////
-
-  const guardarDataCalendar = () => {
+  const guardarDataCalendar = async () => {
     const periodId = Number(periodoActual.id);
     const periodName =
       maestria.tipoPeriodos === "Unico (Diplomado)"
@@ -34,7 +33,6 @@ function Process() {
 
     const etapas = [];
 
-    // === ETAPAS NORMALES (análisis, diseño, desarrollo) ===
     const etapasProceso = [
       {
         id: 1,
@@ -72,7 +70,6 @@ function Process() {
           duracion,
         };
       });
-
       const duracionTotal = actividadesFinales.reduce(
         (acc, a) => acc + a.duracion,
         0
@@ -85,15 +82,14 @@ function Process() {
       });
     });
 
-    // === IMPLEMENTACIÓN ===
     const fechasDeploy =
       JSON.parse(localStorage.getItem("fechasEtapas_deploy")) || [];
+
     if (fechasDeploy[0]?.[0] && fechasDeploy[0]?.[1]) {
       const start = fechasDeploy[0][0];
       const end = fechasDeploy[0][1];
       const duracion =
         (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1;
-
       etapas.push({
         id: 4,
         nombre: "Implementación",
@@ -110,13 +106,11 @@ function Process() {
       });
     }
 
-    // === EVALUACIÓN ===
     if (fechasDeploy[2]?.[0] && fechasDeploy[2]?.[1]) {
       const start = fechasDeploy[2][0];
       const end = fechasDeploy[2][1];
       const duracion =
         (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1;
-
       etapas.push({
         id: 5,
         nombre: "Evaluación",
@@ -133,11 +127,9 @@ function Process() {
       });
     }
 
-    // === CAPACITACIÓN (pedagógica y tecnológica) ===
     const actividadesCap = [];
     let totalCap = 0;
 
-    // Pedagógica
     const fechasPedagogica =
       JSON.parse(localStorage.getItem("fechasEtapas_pedagogica")) || [];
     const modalidadPedagogica =
@@ -155,19 +147,14 @@ function Process() {
       totalCap += 1;
     }
 
-    // Tecnológica (deploy[1])
     if (fechasDeploy[1]?.[0]) {
       const start = fechasDeploy[1][0];
       const end = fechasDeploy[1][1] || fechasDeploy[1][0];
       const duracion =
-        start && end
-          ? (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1
-          : 1;
-
+        (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1;
       const modalidadTecnologica =
         JSON.parse(localStorage.getItem("modalidadEtapas_tecnologica")) ||
         "Presencial";
-
       actividadesCap.push({
         id: 13,
         nombre: "Capacitación Tecnológica",
@@ -176,7 +163,6 @@ function Process() {
         duracion,
         modalidad: modalidadTecnologica,
       });
-
       totalCap += duracion;
     }
 
@@ -189,37 +175,130 @@ function Process() {
       });
     }
 
-    // === TOTAL FINAL ===
     const duracionTotal = etapas.reduce(
       (acc, etapa) => acc + etapa.duracionTotal,
       0
     );
 
     const dataCalendar = {
-      id: periodId,
-      periodo: periodName,
-      duracionTotal,
-      etapas,
+      programaId: Number(id),
+      periodoId: periodId,
+      calendario: {
+        id: periodId,
+        periodo: periodName,
+        duracionTotal,
+        etapas,
+      },
     };
 
-    localStorage.setItem("dataCalendar", JSON.stringify(dataCalendar));
-    console.log("✅ dataCalendar actualizado correctamente:", dataCalendar);
+    try {
+      await updateCalendarBin(dataCalendar);
+      console.log("✅ Calendario guardado correctamente en JSONBin");
+      ["analisis", "diseno", "desarrollo", "deploy", "pedagogica"].forEach(
+        (key) => {
+          localStorage.removeItem(`fechasEtapas_${key}`);
+          localStorage.removeItem(`modalidadEtapas_${key}`);
+          localStorage.removeItem(`diasEtapas_${key}`);
+        }
+      );
+    } catch (error) {
+      alert("Error al guardar el calendario. Intenta de nuevo.");
+      console.error(error);
+    }
   };
-  /////////////////////
 
-  const getFechasOcupadas = () => {
+  const calcularTotal = () => {
+    let total = 0;
+
+    // Procesos principales
+    const etapasProceso = ["analisis", "diseno", "desarrollo"];
+    etapasProceso.forEach((key) => {
+      const fechas =
+        JSON.parse(localStorage.getItem(`fechasEtapas_${key}`)) || [];
+      fechas.forEach(([start, end]) => {
+        if (start && end) {
+          const duracion =
+            (new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24) + 1;
+          total += duracion;
+        }
+      });
+    });
+
+    // Implementación
+    const fechasDeploy =
+      JSON.parse(localStorage.getItem("fechasEtapas_deploy")) || [];
+    if (fechasDeploy[0]?.[0] && fechasDeploy[0]?.[1]) {
+      const duracion =
+        (new Date(fechasDeploy[0][1]) - new Date(fechasDeploy[0][0])) /
+          (1000 * 60 * 60 * 24) +
+        1;
+      total += duracion;
+    }
+
+    // Capacitación tecnológica
+    if (fechasDeploy[1]?.[0] && fechasDeploy[1]?.[1]) {
+      const duracion =
+        (new Date(fechasDeploy[1][1]) - new Date(fechasDeploy[1][0])) /
+          (1000 * 60 * 60 * 24) +
+        1;
+      total += duracion;
+    }
+
+    // Evaluación
+    if (fechasDeploy[2]?.[0] && fechasDeploy[2]?.[1]) {
+      const duracion =
+        (new Date(fechasDeploy[2][1]) - new Date(fechasDeploy[2][0])) /
+          (1000 * 60 * 60 * 24) +
+        1;
+      total += duracion;
+    }
+
+    // Capacitación pedagógica
+    const fechasPedagogica =
+      JSON.parse(localStorage.getItem("fechasEtapas_pedagogica")) || [];
+    if (fechasPedagogica?.[0]) {
+      const start = new Date(fechasPedagogica[0]);
+      const end = new Date(fechasPedagogica[1] || fechasPedagogica[0]);
+      const duracion = (end - start) / (1000 * 60 * 60 * 24) + 1;
+      total += duracion;
+    }
+
+    setTotalGeneral(total);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const bin = await getBin();
+      const programa = bin?.programas.find((p) => Number(p.id) === Number(id));
+      if (!programa) return;
+      const periodo = programa.periodos.find(
+        (p) => Number(p.id) === Number(periodoId)
+      );
+      if (!periodo) return;
+      setMaestria(programa);
+      setPeriodoActual(periodo);
+    };
+    fetchData();
+    calcularTotal();
+  }, [id, periodoId]);
+
+  useEffect(() => {
+    const actualizarTotal = () => calcularTotal();
+    window.addEventListener("actualizarTotal", actualizarTotal);
+    return () => window.removeEventListener("actualizarTotal", actualizarTotal);
+  }, []);
+
+  const fechasOcupadas = (() => {
     const ids = ["analisis", "diseno", "desarrollo", "deploy"];
     const fechas = [];
-
     ids.forEach((id) => {
       const raw = localStorage.getItem(`fechasEtapas_${id}`);
       if (raw) {
         const etapas = JSON.parse(raw);
         etapas.forEach(([start, end]) => {
           if (start && end) {
-            const startDate = new Date(start);
+            let current = new Date(start);
             const endDate = new Date(end);
-            let current = new Date(startDate);
             while (current <= endDate) {
               fechas.push(new Date(current));
               current.setDate(current.getDate() + 1);
@@ -228,84 +307,13 @@ function Process() {
         });
       }
     });
-
     return fechas;
-  };
+  })();
 
-  const fechasOcupadas = getFechasOcupadas();
-
-  const calcularTotal = () => {
-    const ids = ["analisis", "diseno", "desarrollo", "deploy", "pedagogica"];
-    let total = ids.reduce((acc, id) => {
-      const item = JSON.parse(localStorage.getItem(`diasEtapas_${id}`));
-      return acc + (item?.totalDias || 0);
-    }, 0);
-
-    // 🧠 Extra: sumar duración si existe en `fechasEtapas_deploy[1]`
-    const fechasTec = JSON.parse(
-      localStorage.getItem("fechasEtapas_deploy")
-    )?.[1];
-    if (fechasTec?.[0]) {
-      total;
-    }
-
-    setTotalGeneral(total);
-  };
-
-  useEffect(() => {
-    calcularTotal();
-
-    const handleActualizar = () => {
-      calcularTotal();
-    };
-
-    window.addEventListener("actualizarTotal", handleActualizar);
-
-    return () => {
-      window.removeEventListener("actualizarTotal", handleActualizar);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Recuperar datos de localStorage
-    const savedMaestria = localStorage.getItem("maestria");
-
-    if (!savedMaestria) {
-      return;
-    }
-
-    const maestriaData = JSON.parse(savedMaestria);
-
-    // Convertir IDs a números para comparación
-    const maestriaIdNumber = Number(maestriaData.id);
-    const idNumber = Number(id);
-    const periodoIdNumber = Number(periodoId);
-
-    if (maestriaIdNumber === idNumber) {
-      setMaestria(maestriaData);
-
-      // Buscar periodo usando comparación estricta de ID
-      const periodo = maestriaData.periodos.find((p) => {
-        return Number(p.id) === periodoIdNumber;
-      });
-
-      if (periodo) {
-        setPeriodoActual(periodo);
-      } else {
-        console.error("Periodo no encontrado");
-      }
-    } else {
-      console.error("Maestría no coincide");
-    }
-  }, [id, periodoId]);
-
-  if (!maestria || !periodoActual) {
-    return <div>Cargando...</div>;
-  }
+  if (!maestria || !periodoActual) return <div>Cargando...</div>;
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 mt-10 flex flex-col gap-6 items-center">
-      {/* Breadcrumbs actualizados */}
       <Breadcrumbs className="self-start">
         <Link underline="hover" color="inherit" to="/">
           Programas
@@ -314,84 +322,52 @@ function Process() {
           {maestria.nombre}
         </Link>
         <Typography sx={{ color: "text.primary" }}>
-          {maestria.tipoPeriodos === "Unico (Diplomado)"
-            ? "Periodo"
-            : maestria.tipoPeriodos === "Semestral"
-            ? `Semestre ${
-                maestria.periodos.findIndex(
-                  (p) => Number(p.id) === Number(periodoActual.id)
-                ) + 1
-              }`
-            : maestria.tipoPeriodos === "Cuatrimestral"
-            ? `Cuatrimestre ${
-                maestria.periodos.findIndex(
-                  (p) => Number(p.id) === Number(periodoActual.id)
-                ) + 1
-              }`
-            : "Periodo"}
+          {periodoActual.nombre || periodoActual.periodo || "Periodo"}
         </Typography>
       </Breadcrumbs>
 
       <Title level="h1" className="text-start mb-6 w-full max-w-4xl">
-        Programa de procesos -{" "}
-        {maestria.tipoPeriodos === "Unico (Diplomado)"
-          ? "Periodo"
-          : maestria.tipoPeriodos === "Semestral"
-          ? `Semestre ${
-              maestria.periodos.findIndex(
-                (p) => Number(p.id) === Number(periodoActual.id)
-              ) + 1
-            }`
-          : maestria.tipoPeriodos === "Cuatrimestral"
-          ? `Cuatrimestre ${
-              maestria.periodos.findIndex(
-                (p) => Number(p.id) === Number(periodoActual.id)
-              ) + 1
-            }`
-          : "Periodo"}
+        Programa de procesos - {periodoActual.nombre || "Periodo"}
       </Title>
 
-      {/* Etapas */}
       <div className="w-full max-w-4xl">
         <CalendarProcess
           id="analisis"
           etapas={["Análisis", "Revisión", "Validación"]}
-          periodoId={periodoId} // Pasamos el ID del periodo
+          periodoId={periodoId}
         />
         <CapacitacionPedagogica disabledDates={fechasOcupadas} />
         <CalendarProcess
           id="diseno"
           etapas={["Diseño", "Revisión", "Validación"]}
-          periodoId={periodoId} // Pasamos el ID del periodo
+          periodoId={periodoId}
         />
         <CalendarProcess
           id="desarrollo"
           etapas={["Desarrollo", "Revisión", "Validación"]}
-          periodoId={periodoId} // Pasamos el ID del periodo
+          periodoId={periodoId}
         />
-
-        {/* Pasamos el ID del periodo */}
-        {/* <CalendarDeploy periodoId={periodoId} /> */}
         <CalendarDeploy disabledDates={fechasOcupadas} />
 
-        {/*  Total de dias sumados */}
         <div className="flex justify-end">
-          <Title level="h2" className="text-[#808080] mb-4 md:mr-[4rem]">
+          <Title
+            level="h2"
+            className="text-[#808080] mb-4 md:mr-[4rem]"
+            data-total-global
+          >
             Total = {totalGeneral} días
           </Title>
         </div>
       </div>
 
-      {/* Validacion del calendario */}
       <div className="w-full max-w-3xl">
         <Title level="h1" className="text-start mb-4">
           Validar calendario
         </Title>
-        <ValidateCalendar periodoId={periodoId} />{" "}
-        {/* Pasamos el ID del periodo */}
+        <ValidateCalendar periodoId={periodoId} />
         <Button
           text="Guardar"
-          className="h-[2.5rem] w-full sm:w-1/2 lg:w-[20rem] mb-8 "
+          className="h-[2.5rem] w-full sm:w-1/2 lg:w-[20rem] mb-8"
           onClick={guardarDataCalendar}
         />
       </div>

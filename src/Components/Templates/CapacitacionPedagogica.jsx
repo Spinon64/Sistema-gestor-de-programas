@@ -1,31 +1,45 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Box from "../Atoms/Box";
 import Title from "../Atoms/Title";
 import SingleDatePicker from "../Organisms/SingleDatePicker";
 
 function CapacitacionPedagogica({ disabledDates = [] }) {
-  const [dias, setDias] = useState(0);
   const [fecha, setFecha] = useState(null);
   const [modalidad, setModalidad] = useState("Presencial");
 
+  // ✅ Cargar fecha y modalidad guardadas
   useEffect(() => {
-    // Guardar la fecha seleccionada como un array [fecha] para mantener consistencia
-    if (fecha) {
-      localStorage.setItem("fechasEtapas_pedagogica", JSON.stringify([fecha]));
+    const fechasGuardadas =
+      JSON.parse(localStorage.getItem("fechasEtapas_pedagogica")) || [];
+    const modalidadGuardada =
+      JSON.parse(localStorage.getItem("modalidadEtapas_pedagogica")) ||
+      "Presencial";
+
+    if (fechasGuardadas[0]) {
+      setFecha(fechasGuardadas[0]);
     }
+    setModalidad(modalidadGuardada);
+  }, []);
 
-    localStorage.setItem(
-      "diasEtapas_pedagogica",
-      JSON.stringify({ totalDias: dias })
-    );
-
-    localStorage.setItem(
-      "modalidadEtapas_pedagogica",
-      JSON.stringify(modalidad)
-    );
-
-    window.dispatchEvent(new Event("actualizarTotal"));
-  }, [dias, fecha, modalidad]);
+  // ✅ Guardar cambios al seleccionar fecha o modalidad
+  useEffect(() => {
+    if (fecha) {
+      const duracion = 1;
+      localStorage.setItem(
+        "fechasEtapas_pedagogica",
+        JSON.stringify([fecha, fecha])
+      );
+      localStorage.setItem(
+        "diasEtapas_pedagogica",
+        JSON.stringify({ totalDias: duracion })
+      );
+      localStorage.setItem(
+        "modalidadEtapas_pedagogica",
+        JSON.stringify(modalidad)
+      );
+      window.dispatchEvent(new Event("actualizarTotal"));
+    }
+  }, [fecha, modalidad]);
 
   return (
     <Box
@@ -58,8 +72,7 @@ function CapacitacionPedagogica({ disabledDates = [] }) {
           <div className="lg:basis-1/4 mb-1 w-[250px] lg:w-full">
             <SingleDatePicker
               label=""
-              onChangeDays={(value) => setDias(value)}
-              onChangeFecha={(date) => setFecha(date)} // ✅ recibir fecha
+              onChangeFecha={(date) => setFecha(date)}
               disabledDates={disabledDates}
             />
           </div>
@@ -67,7 +80,7 @@ function CapacitacionPedagogica({ disabledDates = [] }) {
           {/* Visualización de días */}
           <div className="lg:basis-1/4 text-right">
             <Title level="h3" className="text-[#808080]">
-              {dias} {dias === 1 ? "Día" : "Días"}
+              {fecha ? "1 Día" : "0 Días"}
             </Title>
           </div>
         </div>
