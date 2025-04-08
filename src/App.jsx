@@ -33,7 +33,10 @@ export default function App() {
         {/* AUN NO ES ACCESIBLE */}
         <Route path="/revision" element={<Revision />} />{" "}
         {/* RUTA DE LA TEMPLATE DEL CALENDARIO */}
-        <Route path="/calendar-preview" element={<PlanningCalendar />} />{" "}
+        <Route
+          path="/calendar-preview/:programaId/:periodoId"
+          element={<PlanningCalendar />}
+        />
       </Route>
     </Routes>
   );

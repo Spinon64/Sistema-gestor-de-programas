@@ -27,6 +27,24 @@ export const getBin = async () => {
   }
 };
 
+// Obtienen los datos del calendario
+export const getCalendarBin = async () => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/${CALENDAR_BIN_ID}/latest`,
+      {
+        headers: {
+          "X-Master-Key": MASTER_KEY,
+        },
+      }
+    );
+    return response.data.record;
+  } catch (error) {
+    console.error("❌ Error al obtener bin de calendarios:", error);
+    return null;
+  }
+};
+
 // Actualizar todo el bin con los programas
 export const updateBin = async (newData) => {
   try {
@@ -52,10 +70,38 @@ export const updateBin = async (newData) => {
 
 export const updateCalendarBin = async (dataCalendar) => {
   try {
-    console.log(`📤 Enviando calendario al bin: ${CALENDAR_BIN_ID}`);
-    const response = await axios.put(
+    const response = await axios.get(
+      `${API_BASE_URL}/${CALENDAR_BIN_ID}/latest`,
+      {
+        headers: {
+          "X-Master-Key": MASTER_KEY,
+        },
+      }
+    );
+
+    let dataActual = response.data.record;
+    if (!dataActual || typeof dataActual !== "object") {
+      dataActual = { calendarios: [] };
+    } else if (!Array.isArray(dataActual.calendarios)) {
+      dataActual.calendarios = [];
+    }
+
+    // Reemplazar o agregar el calendario del periodo correspondiente
+    const index = dataActual.calendarios.findIndex(
+      (c) =>
+        Number(c.programaId) === Number(dataCalendar.programaId) &&
+        Number(c.periodoId) === Number(dataCalendar.periodoId)
+    );
+
+    if (index !== -1) {
+      dataActual.calendarios[index] = dataCalendar;
+    } else {
+      dataActual.calendarios.push(dataCalendar);
+    }
+
+    const putRes = await axios.put(
       `${API_BASE_URL}/${CALENDAR_BIN_ID}`,
-      dataCalendar,
+      dataActual,
       {
         headers: {
           "Content-Type": "application/json",
@@ -63,16 +109,10 @@ export const updateCalendarBin = async (dataCalendar) => {
         },
       }
     );
-    return response.data;
+
+    return putRes.data;
   } catch (error) {
     console.error("❌ Error al actualizar bin de calendario:", error);
-    if (error.response) {
-      console.error(
-        `   Estado: ${error.response.status}, Mensaje: ${JSON.stringify(
-          error.response.data
-        )}`
-      );
-    }
     throw error;
   }
 };

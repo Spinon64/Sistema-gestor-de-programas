@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getCalendarBin } from "../../services/jsonBinConfig";
 import Coordinador from "../../assets/coordinador.svg";
 import EAD from "../../assets/eda.svg";
 import RED from "../../assets/red.svg";
@@ -100,157 +102,37 @@ function TablaContenidos() {
   );
 }
 function PlanningCalendar() {
-  // Datos de ejemplo basados en tu estructura JSON, normalmente vendrían de una API
-  // const [periodoData, setPeriodoData] = useState({
-  //   id: 1,
-  //   periodo: "Semestre 1",
-  //   duracionTotal: 56,
-  //   etapas: [
-  //     {
-  //       id: 1,
-  //       nombre: "Análisis",
-  //       duracionTotal: 14,
-  //       actividades: [
-  //         {
-  //           id: 1,
-  //           nombre: "Análisis",
-  //           fechaInicio: "2025-04-02",
-  //           fechaFin: "2025-04-05",
-  //           duracion: 4,
-  //         },
-  //         {
-  //           id: 2,
-  //           nombre: "Revisión",
-  //           fechaInicio: "2025-04-07",
-  //           fechaFin: "2025-04-11",
-  //           duracion: 5,
-  //         },
-  //         {
-  //           id: 3,
-  //           nombre: "Validación",
-  //           fechaInicio: "2025-04-14",
-  //           fechaFin: "2025-04-18",
-  //           duracion: 5,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 2,
-  //       nombre: "Diseño",
-  //       duracionTotal: 15,
-  //       actividades: [
-  //         {
-  //           id: 4,
-  //           nombre: "Diseño",
-  //           fechaInicio: "2025-04-21",
-  //           fechaFin: "2025-04-25",
-  //           duracion: 5,
-  //         },
-  //         {
-  //           id: 5,
-  //           nombre: "Revisión",
-  //           fechaInicio: "2025-04-28",
-  //           fechaFin: "2025-05-02",
-  //           duracion: 5,
-  //         },
-  //         {
-  //           id: 6,
-  //           nombre: "Validación",
-  //           fechaInicio: "2025-05-05",
-  //           fechaFin: "2025-05-09",
-  //           duracion: 5,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 3,
-  //       nombre: "Desarrollo",
-  //       duracionTotal: 15,
-  //       actividades: [
-  //         {
-  //           id: 7,
-  //           nombre: "Desarrollo",
-  //           fechaInicio: "2025-05-12",
-  //           fechaFin: "2025-05-16",
-  //           duracion: 5,
-  //         },
-  //         {
-  //           id: 8,
-  //           nombre: "Revisión",
-  //           fechaInicio: "2025-05-19",
-  //           fechaFin: "2025-05-23",
-  //           duracion: 5,
-  //         },
-  //         {
-  //           id: 9,
-  //           nombre: "Validación",
-  //           fechaInicio: "2025-05-26",
-  //           fechaFin: "2025-05-30",
-  //           duracion: 5,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 4,
-  //       nombre: "Implementación",
-  //       duracionTotal: 5,
-  //       actividades: [
-  //         {
-  //           id: 10,
-  //           nombre: "Implementación",
-  //           fechaInicio: "2025-06-02",
-  //           fechaFin: "2025-06-06",
-  //           duracion: 5,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 5,
-  //       nombre: "Evaluación",
-  //       duracionTotal: 5,
-  //       actividades: [
-  //         {
-  //           id: 11,
-  //           nombre: "Evaluación",
-  //           fechaInicio: "2025-06-09",
-  //           fechaFin: "2025-06-13",
-  //           duracion: 5,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 6,
-  //       nombre: "Capacitación",
-  //       duracionTotal: 2,
-  //       actividades: [
-  //         {
-  //           id: 12,
-  //           nombre: "Capacitación Pedagógica",
-  //           fechaInicio: "2025-06-20",
-  //           fechaFin: "2025-06-20",
-  //           duracion: 1,
-  //           modalidad: "Virtual",
-  //         },
-  //         {
-  //           id: 13,
-  //           nombre: "Capacitación Tecnológica",
-  //           fechaInicio: "2025-06-24",
-  //           fechaFin: "2025-06-24",
-  //           duracion: 1,
-  //           modalidad: "Presencial",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // });
+  const { programaId, periodoId } = useParams();
+  const [periodoData, setPeriodoData] = useState(null);
 
-  // Efecto para cargar datos de la API (simulado aquí)
   useEffect(() => {
-    // Aquí podrías hacer la llamada a tu API para obtener los datos reales
-    // fetch('/api/periodos/1')
-    //   .then(response => response.json())
-    //   .then(data => setPeriodoData(data));
-  }, []);
+    const fetchCalendario = async () => {
+      try {
+        const data = await getCalendarBin(); // 👈🏼 asegúrate que sea el bin correcto
+        console.log("📥 Datos completos del bin calendario:", data);
+
+        const calendario = data?.calendarios?.find(
+          (c) =>
+            Number(c.programaId) === Number(programaId) &&
+            Number(c.periodoId) === Number(periodoId)
+        );
+
+        console.log("🔍 Calendario encontrado:", calendario);
+
+        if (calendario?.calendario) {
+          setPeriodoData(calendario.calendario);
+        } else {
+          console.warn(
+            "⚠️ No se encontró calendario para ese programa y periodo."
+          );
+        }
+      } catch (error) {
+        console.error("❌ Error al cargar calendario:", error);
+      }
+    };
+
+    fetchCalendario();
+  }, [programaId, periodoId]);
 
   return (
     <div className="flex flex-col items-center lg:flex-row lg:items-start p-4 space-y-4 lg:space-y-0 lg:space-x-6">
@@ -267,14 +149,16 @@ function PlanningCalendar() {
           <Title level="h3" className="text-center mt-3">
             CALENDARIO
           </Title>
-          <Title level="h4" className="text-center">
-            Maestría en Ciencia de Datos - {periodoData.periodo}
-          </Title>
-        </div>
-
-        {/* Tabla Responsiva */}
-        <div className="w-full overflow-x-auto my-3">
-          <TablaDinamica periodoData={periodoData} />
+          {periodoData ? (
+            <>
+              <Title level="h4" className="text-center">
+                {periodoData.periodo}
+              </Title>
+              <TablaDinamica periodoData={periodoData} />
+            </>
+          ) : (
+            <p className="text-center mt-4">Cargando calendario...</p>
+          )}
         </div>
       </div>
     </div>

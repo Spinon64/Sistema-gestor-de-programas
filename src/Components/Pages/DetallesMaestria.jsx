@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import CalendarIcon from "../Atoms/CalendarIcon";
+import CalendarIcon from "../../assets/CalendarIcon.svg";
 import Title from "../Atoms/Title";
 import DotIcon from "../Atoms/DotIcon";
 import Button from "../Atoms/Button";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { getBin } from "../../services/jsonBinConfig";
+import Eye from "../../assets/eye.svg";
 
 const DetallesMaestria = () => {
   const { id } = useParams();
@@ -77,18 +78,24 @@ const DetallesMaestria = () => {
           >
             <div>
               {/* Encabezado */}
-              <Link to={`/calendario/${maestria.id}/${periodo.id.toString()}`}>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  {maestria.tipoPeriodos === "Unico (Diplomado)"
-                    ? "Periodo"
-                    : maestria.tipoPeriodos === "Semestral"
-                    ? `Semestre ${index + 1}`
-                    : maestria.tipoPeriodos === "Cuatrimestral"
-                    ? `Cuatrimestre ${index + 1}`
-                    : "Periodo"}
-                  <CalendarIcon />
-                </h2>
-              </Link>
+
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                {maestria.tipoPeriodos === "Unico (Diplomado)"
+                  ? "Periodo"
+                  : maestria.tipoPeriodos === "Semestral"
+                  ? `Semestre ${index + 1}`
+                  : maestria.tipoPeriodos === "Cuatrimestral"
+                  ? `Cuatrimestre ${index + 1}`
+                  : "Periodo"}
+                <Link
+                  to={`/calendario/${maestria.id}/${periodo.id.toString()}`}
+                >
+                  <img src={CalendarIcon} alt="" className="size-5" />
+                </Link>
+                <Link to={`/calendar-preview/${maestria.id}/${periodo.id}`}>
+                  <img src={Eye} alt="" className="size-5 cursor-pointer" />
+                </Link>
+              </h2>
 
               {/* Tabla */}
               <table className="w-full border-separate border-spacing-y-2 mb-6">
