@@ -5,19 +5,19 @@ import Button from "../Atoms/Button";
 import Ejemplo from "../../assets/ejemplo.jpg";
 import FileUploadButton from "../Atoms/FileUploadButton";
 import Input from "../Molecules/Input";
-import Select from "../Molecules/Select";
+import CustomSelect from "../Molecules/CustomSelect";
 import { updateBin, getBin } from "../../services/jsonBinConfig"; // Asegúrate de importar
 
 const CrearMaestria = () => {
   const [nombre, setNombre] = useState("");
   const [numPeriodos, setNumPeriodos] = useState(1);
-  const [tipoPeriodos, setTipoPeriodos] = useState("semestral");
-  const [tipoProgramas, setTipoProgramas] = useState("maestria");
-  const [tipoNivel, setTipoNivel] = useState("superior");
-  const [tipoDependencia, setTipoDependencia] = useState("teleamatica");
+  const [tipoPeriodos, setTipoPeriodos] = useState("");
+  const [tipoProgramas, setTipoProgramas] = useState("");
+  const [tipoNivel, setTipoNivel] = useState("");
+  const [tipoDependencia, setTipoDependencia] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Added missing state
-  const [error, setError] = useState(null); // Added missing state
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate(); // Usar useNavigate para la navegación
 
@@ -110,7 +110,7 @@ const CrearMaestria = () => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[110rem] mb-3 flex-1 flex-col px-4 sm:px-6 lg:px-8 lg:items-center">
+    <div className="mx-auto flex w-full max-w-[110rem] mb-3 flex-1 flex-col px-0 lg:px-8 lg:items-center">
       <div className="mx-10 flex flex-col justify-center">
         <Title level="h1" className="mt-5 mb-10 self-start">
           Crear nuevo programa
@@ -136,7 +136,7 @@ const CrearMaestria = () => {
             />
 
             {/* Select Para Tipo Programa */}
-            <Select
+            <CustomSelect
               label="Tipo de Programa"
               options={["Maestría", "Diplomado"]}
               value={tipoProgramas}
@@ -144,7 +144,7 @@ const CrearMaestria = () => {
             />
 
             {/* Div para Tipo Periodos */}
-            <Select
+            <CustomSelect
               label="Tipo de Periodo"
               options={["Semestral", "Cuatrimestral", "Unico (Diplomado)"]}
               value={tipoPeriodos}
@@ -172,7 +172,7 @@ const CrearMaestria = () => {
             </div>
 
             {/* Select Para Nivel */}
-            <Select
+            <CustomSelect
               label="Nivel"
               options={[
                 "Media superior",
@@ -185,7 +185,7 @@ const CrearMaestria = () => {
               onChange={(e) => setTipoNivel(e.target.value)}
             />
             {/* Div para Facultad o Dependencia */}
-            <Select
+            <CustomSelect
               label="Facultad o Dependencia"
               options={[
                 "Facultad Telemática",

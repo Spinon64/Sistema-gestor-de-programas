@@ -70,7 +70,7 @@ const DetallesMaestria = () => {
         Periodos
       </Title>
 
-      <div className="mt-6 mx-5 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] items-stretch gap-8">
+      <div className="mt-6 mx-1 grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] items-stretch gap-8">
         {maestria.periodos.map((periodo, index) => (
           <div
             key={periodo.id}

@@ -66,7 +66,7 @@ function CalendarProcess({
         {etapas.map((etapa, index) => (
           <div key={index} className="flex flex-col gap-2">
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:justify-between w-full">
-              <div className="lg:basis-1/4 shrink-0 mr-[3rem]">
+              <div className="lg:basis-1/4 shrink-0 mr-[3rem] mb-2">
                 <Title
                   level="h3"
                   className={index === 0 ? "font-bold" : "text-[#808080]"}

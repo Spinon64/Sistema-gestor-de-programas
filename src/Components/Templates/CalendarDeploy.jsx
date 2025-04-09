@@ -94,7 +94,7 @@ function CalendarDeploy({ disabledDates = [] }) {
                         });
                       }
                     }}
-                    className="!w-[180px] h-[3rem]"
+                    className="!w-[160px] h-[3rem]"
                     label=""
                     disabledDates={disabledDates}
                   />
@@ -108,7 +108,7 @@ function CalendarDeploy({ disabledDates = [] }) {
                     })
                   }
                   disabledDates={disabledDates}
-                  className="!w-[320px]"
+                  className="!w-[300px]"
                 />
               )}
             </div>

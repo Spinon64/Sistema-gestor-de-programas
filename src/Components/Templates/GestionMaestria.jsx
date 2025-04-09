@@ -206,14 +206,14 @@ const GestionMaestria = () => {
   if (!maestria) return <div>Programa no encontrado</div>;
 
   return (
-    <form id="form-asignaturas" className="p-4 max-w-9xl mx-10">
-      <div className="flex justify-between">
+    <form id="form-asignaturas" className="mx-4 mt-5 max-w-9xl md:mx-10">
+      <div className="flex flex-col mb-7 lg:flex-row justify-between">
         <Title level="h1" className="text-2xl font-semibold">
           {maestria.nombre}
         </Title>
-        <div className="flex gap-5">
+        <div className="flex flex-col md:flex-row gap-5">
           <Button
-            className="mt-6 bg-[#474c5b] text-white min-w-[10rem] h-[2.5rem] content-center rounded-lg w-auto text-center"
+            className="mt-6 bg-[#474c5b] text-white w-[14rem] h-[2.5rem] content-center rounded-lg text-center"
             onClick={hanldeIsEditing}
             text={isEditing ? (saving ? "Guardando..." : "Guardar") : "Editar"}
             form="form-asignaturas"
@@ -340,7 +340,7 @@ const GestionMaestria = () => {
                       text="Agregar profesor"
                       type="button"
                       onClick={() => handleAddProfesor(periodo.id, materia.id)}
-                      className="h-[2.5rem] w-full mt-4"
+                      className="h-[2.5rem] w-full mt-4 text-sm"
                     />
                   )}
                 </div>
