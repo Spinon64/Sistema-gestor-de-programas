@@ -103,7 +103,7 @@ const GestionMaestria = () => {
     const newMateria = {
       id: Date.now(),
       nombre: "",
-      profesores: [""],
+      profesores: [" "],
     };
     const updatedMaestria = { ...maestria };
 

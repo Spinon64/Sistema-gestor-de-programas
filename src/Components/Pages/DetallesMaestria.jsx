@@ -9,6 +9,10 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { getBin } from "../../services/jsonBinConfig";
 import { updateBin } from "../../services/jsonBinConfig";
 import Eye from "../../assets/eye.svg";
+import {
+  getCalendarBin,
+  updateCalendarBin,
+} from "../../services/jsonBinConfig";
 
 const DetallesMaestria = () => {
   const { id } = useParams();
@@ -29,17 +33,40 @@ const DetallesMaestria = () => {
         (programa) => programa.id !== parseInt(id)
       );
 
-      const nuevoContenido = {
+      await updateBin({
         ...data,
         programas: nuevosProgramas,
-      };
+      });
 
-      await updateBin(nuevoContenido);
-      alert("Programa eliminado correctamente.");
+      // 🧹 También elimina los calendarios asociados
+      await eliminarCalendariosDelPrograma(parseInt(id));
+
+      alert("Programa y calendarios eliminados correctamente.");
       navigate("/");
     } catch (error) {
-      console.error("Error al eliminar programa:", error);
+      console.error("❌ Error al eliminar el programa:", error);
       alert("Ocurrió un error al intentar eliminar el programa.");
+    }
+  };
+
+  const eliminarCalendariosDelPrograma = async (programaId) => {
+    try {
+      const calendarioData = await getCalendarBin();
+
+      if (!calendarioData || !Array.isArray(calendarioData.calendarios)) {
+        console.warn("No se encontraron calendarios para procesar.");
+        return;
+      }
+
+      // Filtrar todos los calendarios que NO pertenezcan al programa eliminado
+      const nuevosCalendarios = calendarioData.calendarios.filter(
+        (c) => Number(c.programaId) !== Number(programaId)
+      );
+
+      await updateCalendarBin({ calendarios: nuevosCalendarios });
+      console.log("✅ Calendarios eliminados correctamente.");
+    } catch (error) {
+      console.error("❌ Error al eliminar calendarios del programa:", error);
     }
   };
 
