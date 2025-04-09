@@ -205,7 +205,7 @@ const CrearMaestria = () => {
               className="h-12 lg:mt-9 w-full"
               disabled={isLoading}
             >
-              {isLoading ? "Guardando..." : "Crear Maestría"}
+              {isLoading ? "Guardando..." : "Crear Programa"}
             </Button>
           </form>
           <div className="hidden md:flex justify-center h-[800px] lg:h-[500px] w-auto">

@@ -7,6 +7,7 @@ import Button from "../Atoms/Button";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { getBin } from "../../services/jsonBinConfig";
+import { updateBin } from "../../services/jsonBinConfig";
 import Eye from "../../assets/eye.svg";
 
 const DetallesMaestria = () => {
@@ -14,6 +15,33 @@ const DetallesMaestria = () => {
   const [maestria, setMaestria] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const eliminarPrograma = async () => {
+    const confirmacion = window.confirm(
+      "¿Estás seguro de que deseas eliminar este programa?"
+    );
+    if (!confirmacion) return;
+
+    try {
+      const data = await getBin();
+
+      const nuevosProgramas = data.programas.filter(
+        (programa) => programa.id !== parseInt(id)
+      );
+
+      const nuevoContenido = {
+        ...data,
+        programas: nuevosProgramas,
+      };
+
+      await updateBin(nuevoContenido);
+      alert("Programa eliminado correctamente.");
+      navigate("/");
+    } catch (error) {
+      console.error("Error al eliminar programa:", error);
+      alert("Ocurrió un error al intentar eliminar el programa.");
+    }
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -62,9 +90,16 @@ const DetallesMaestria = () => {
         </Typography>
       </Breadcrumbs>
 
-      <Title level="h1" className="text-2xl mt-5 font-semibold">
-        {maestria.nombre}
-      </Title>
+      <div className="flex flex-col md:flex-row justify-between">
+        <Title level="h1" className="text-2xl mt-5 font-semibold">
+          {maestria.nombre}
+        </Title>
+        <Button
+          text="Eliminar Programa"
+          className="mt-5 w-[14rem] h-[2.5rem] text-sm bg-red-600"
+          onClick={eliminarPrograma}
+        />
+      </div>
 
       <Title level="h2" className="mt-4">
         Periodos
