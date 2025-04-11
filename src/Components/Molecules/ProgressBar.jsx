@@ -1,16 +1,19 @@
-function ProgressBar({ currentPhase }) {
+import React from "react";
+
+function ProgressBar({ currentPhase = 0 }) {
   // Definimos las fases
   const phases = ["A", "D", "D", "I", "E"];
 
   return (
-    <div className="w-full py-4 px-2">
-      <div className="flex items-center justify-between">
+    <div className="w-full max-w-3xl mx-auto py-4 px-2 overflow-x-auto">
+      <div className="flex items-center justify-between min-w-[280px]">
         {phases.map((phase, index) => (
           <React.Fragment key={index}>
             {/* Círculo de fase */}
             <div
               className={`
-                w-12 h-12 rounded-full flex items-center justify-center font-bold
+                w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center 
+                text-sm sm:text-base md:text-lg font-bold shrink-0
                 ${
                   index <= currentPhase
                     ? "bg-green-500 text-white"
@@ -25,7 +28,7 @@ function ProgressBar({ currentPhase }) {
             {index < phases.length - 1 && (
               <div
                 className={`
-                  flex-grow h-1 mx-2
+                  flex-grow h-1 mx-1 sm:mx-2
                   ${index < currentPhase ? "bg-green-500" : "bg-gray-300"}
                 `}
               />

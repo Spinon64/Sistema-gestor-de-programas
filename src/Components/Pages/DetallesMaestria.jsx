@@ -4,8 +4,10 @@ import CalendarIcon from "../../assets/CalendarIcon.svg";
 import Title from "../Atoms/Title";
 import DotIcon from "../Atoms/DotIcon";
 import Button from "../Atoms/Button";
+import Trash from "../../assets/Trash.svg";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Edit from "../../assets/Edit.svg";
 import { getBin } from "../../services/jsonBinConfig";
 import { updateBin } from "../../services/jsonBinConfig";
 import Eye from "../../assets/eye.svg";
@@ -123,7 +125,8 @@ const DetallesMaestria = () => {
         </Title>
         <Button
           text="Eliminar Programa"
-          className="mt-5 w-[14rem] h-[2.5rem] text-sm bg-red-600"
+          className="mt-5 w-[16rem] h-[2.5rem] text-sm bg-red-600"
+          img={Trash}
           onClick={eliminarPrograma}
         />
       </div>
@@ -203,10 +206,11 @@ const DetallesMaestria = () => {
               </table>
             </div>
             {/* Botón */}
-            <div className="mt-auto">
+            <div className="mt-auto ">
               <Button
                 text="Editar semestre"
-                className="w-full h-[2.5rem] p-2"
+                className="w-full h-[2.5rem] p-2 "
+                img={Edit}
                 onClick={() => handleEditarPrograma(periodo.id)}
               />
             </div>

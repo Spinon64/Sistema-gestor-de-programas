@@ -6,6 +6,7 @@ import ValidateCalendar from "../Templates/ValidateCalendar";
 import Button from "../Atoms/Button";
 import CalendarDeploy from "../Templates/CalendarDeploy";
 import Typography from "@mui/material/Typography";
+import Save from "../../assets/Save.svg";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import CapacitacionPedagogica from "../Templates/CapacitacionPedagogica";
 import { updateCalendarBin, getBin } from "../../services/jsonBinConfig";
@@ -372,6 +373,7 @@ function Process() {
         <ValidateCalendar periodoId={periodoId} />
         <Button
           text="Guardar"
+          img={Save}
           className="h-[2.5rem] w-full sm:w-1/2 lg:w-[20rem] mb-8"
           onClick={guardarDataCalendar}
         />

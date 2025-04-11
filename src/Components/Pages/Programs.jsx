@@ -4,6 +4,7 @@ import SearchInput from "../Atoms/SearchInput.jsx";
 import Button from "../Atoms/Button.jsx";
 import Title from "../Atoms/Title.jsx";
 import { Link } from "react-router-dom";
+import Plus from "../../assets/plus.svg";
 import { getBin } from "../../services/jsonBinConfig.js";
 
 const Programs = () => {
@@ -58,7 +59,8 @@ const Programs = () => {
           <div className="flex flex-col items-start md:flex-row gap-3 mt-6">
             <Link to="/crear-programa">
               <Button
-                className="!text-xs md:text-sm h-[2.5rem] font-thin w-[16rem]"
+                img={Plus}
+                className="text-xs md:text-sm h-[2.5rem] font-thin w-[16rem]"
                 text="Crear Programa"
               />
             </Link>

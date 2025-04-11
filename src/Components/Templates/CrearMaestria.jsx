@@ -6,6 +6,7 @@ import Ejemplo from "../../assets/ejemplo.jpg";
 import FileUploadButton from "../Atoms/FileUploadButton";
 import Input from "../Molecules/Input";
 import CustomSelect from "../Molecules/CustomSelect";
+import Plus from "../../assets/plus.svg";
 import { updateBin, getBin } from "../../services/jsonBinConfig"; // Asegúrate de importar
 
 const CrearMaestria = () => {
@@ -203,6 +204,7 @@ const CrearMaestria = () => {
               text="Crear Programa"
               type="submit"
               className="h-12 lg:mt-9 w-full"
+              img={Plus}
               disabled={isLoading}
             >
               {isLoading ? "Guardando..." : "Crear Programa"}
